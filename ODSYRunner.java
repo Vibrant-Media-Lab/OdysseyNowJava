@@ -1,17 +1,49 @@
-public class ODSYRunner(){
+package ODSYredux;
+
+import java.applet.Applet;
+
+public class ODSYRunner extends Applet{
 
     int gameChoice = 0;
     
-    private static void decrementGame(){
+    public void init(){
         
     }
     
-    private static void incrementGame(){
+    public void paint(Graphics g){
         
     }
     
-    public static void main(String[] args){
-        //there is a lot of work to be done
+    public void update(Graphics g){ //main system tick function
+        boolean exitTime = false;
+        while(true){
+            
+            if(exitTime){
+                exit();
+            }
+            
+            try{
+                Thread.sleep(10);
+            } catch(InterruptedException e){
+                e.printStackTrace();
+            }
+            
+        }
     }
+    
+    private void exit(){
+        System.exit(0);
+    }
+    
+    
+    private void decrementGame(){
+        
+    }
+    
+    private void incrementGame(){
+        
+    }
+    
+    
 
 }
