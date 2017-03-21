@@ -48,7 +48,7 @@ public class ODSYRunner extends JPanel {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        JFrame frame = new JFrame("Sample Frame");
+        JFrame frame = new JFrame("ODSY Redux");
         ODSYRunner game = new ODSYRunner();
         frame.add(game);
         frame.setSize(300, 400);
