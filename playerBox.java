@@ -25,7 +25,7 @@ public class playerBox{
 	}
     
     public void keyPressed(KeyEvent e) {
-        if(player == 1){
+        if(player == 2){
             if (e.getKeyCode() == KeyEvent.VK_A)
                 xa = -1;
             if (e.getKeyCode() == KeyEvent.VK_D)
@@ -36,7 +36,7 @@ public class playerBox{
             if (e.getKeyCode() == KeyEvent.VK_S)
                 ya = 1;   
         }
-        else if(player == 2){
+        else if(player == 1){
             if (e.getKeyCode() == KeyEvent.VK_LEFT)
                 xa = -1;
             if (e.getKeyCode() == KeyEvent.VK_RIGHT)
@@ -51,7 +51,7 @@ public class playerBox{
     
     public void keyReleased(KeyEvent e) {
         
-        if(player == 1){
+        if(player == 2){
             if (e.getKeyCode() == KeyEvent.VK_A){
                 if(xa == -1)
                     xa = 0;
@@ -69,7 +69,7 @@ public class playerBox{
                     ya = 0;
             }
         }
-        else if(player == 2){
+        else if(player == 1){
             if (e.getKeyCode() == KeyEvent.VK_LEFT){
                 if(xa == -1)
                     xa = 0;

@@ -5,13 +5,11 @@ import java.awt.event.*;
 @SuppressWarnings("serial")
 public class ODSYRunner extends JPanel {
     
-    int leftX = 0;
-    int leftY = 0;
-    int rightX = 0;
-    int rightY = 0;
-    
+    static int xSize = 800;
+    static int ySize = 600;
     playerBox box1 = new playerBox(this, 1);
     playerBox box2 = new playerBox(this, 2);
+    midLine mid = new midLine(this);
     
     public ODSYRunner(){
         addKeyListener(new KeyListener() {
@@ -49,14 +47,14 @@ public class ODSYRunner extends JPanel {
             RenderingHints.VALUE_ANTIALIAS_ON);
         box1.paint(g2d);
         box2.paint(g2d);
-        
+        mid.paint(g2d);
     }
 
     public static void main(String[] args) throws InterruptedException {
         JFrame frame = new JFrame("ODSY Redux");
         ODSYRunner game = new ODSYRunner();
         frame.add(game);
-        frame.setSize(300, 400);
+        frame.setSize(xSize, ySize);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
