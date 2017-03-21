@@ -2,9 +2,9 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class playerBox{
-	int x = 0;
-	int y = 0;
-	int xa = 1;
+	int x = 20;
+	int y = 20;
+	int xa = 0;
 	int ya = 0;
 	private ODSYRunner game;
 
@@ -13,17 +13,8 @@ public class playerBox{
 	}
 
 	void move() {
-		if (x + xa < 0)
-			xa = 1;
-		if (x + xa > game.getWidth() - 30)
-			xa = -1;
-		if (y + ya < 0)
-			ya = 1;
-		if (y + ya > game.getHeight() - 30)
-			ya = -1;
-
-		x = x + xa;
-		y = y + ya;
+		x = x + 5*xa;
+		y = y + 5*ya;
 	}
 
 	public void paint(Graphics2D g) {
