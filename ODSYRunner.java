@@ -10,7 +10,8 @@ public class ODSYRunner extends JPanel {
     int rightX = 0;
     int rightY = 0;
     
-    playerBox box1 = new playerBox(this);
+    playerBox box1 = new playerBox(this, 1);
+    playerBox box2 = new playerBox(this, 2);
     
     public ODSYRunner(){
         addKeyListener(new KeyListener() {
@@ -21,11 +22,13 @@ public class ODSYRunner extends JPanel {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				box1.keyReleased(e);
+                box2.keyReleased(e);
 			}
 
 			@Override
 			public void keyPressed(KeyEvent e) {
 				box1.keyPressed(e);
+                box2.keyPressed(e);
 			}
 		});
 		setFocusable(true);
@@ -34,6 +37,7 @@ public class ODSYRunner extends JPanel {
 
 	private void moveBox() {
 		box1.move();
+        box2.move();
 	}
     
     
@@ -44,6 +48,7 @@ public class ODSYRunner extends JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
             RenderingHints.VALUE_ANTIALIAS_ON);
         box1.paint(g2d);
+        box2.paint(g2d);
         
     }
 
