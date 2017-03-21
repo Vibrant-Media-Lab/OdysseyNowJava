@@ -13,6 +13,7 @@ public class playerBox{
 	public playerBox(ODSYRunner game, int playNum) {
 		this.game = game;
         player = playNum;
+        x = x + 300*(playNum - 1);
 	}
 
 	void move() {
@@ -24,69 +25,33 @@ public class playerBox{
 		g.fillRect(x, y, 30, 30);
 	}
     
-    public void keyPressed(KeyEvent e) {
-        if(player == 2){
-            if (e.getKeyCode() == KeyEvent.VK_A)
-                xa = -1;
-            if (e.getKeyCode() == KeyEvent.VK_D)
-                xa = 1;
-
-            if (e.getKeyCode() == KeyEvent.VK_W)
-                ya = -1;
-            if (e.getKeyCode() == KeyEvent.VK_S)
-                ya = 1;   
+    public void keyPressed(int control) {
+        if(control == 0){
+            xa = -1;
         }
-        else if(player == 1){
-            if (e.getKeyCode() == KeyEvent.VK_LEFT)
-                xa = -1;
-            if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-                xa = 1;
-
-            if (e.getKeyCode() == KeyEvent.VK_UP)
-                ya = -1;
-            if (e.getKeyCode() == KeyEvent.VK_DOWN)
-                ya = 1;   
+        else if(control == 1){
+            xa = 1;
+        }
+        else if(control == 2){
+            ya = -1;
+        }
+        else if(control == 3){
+            ya = 1;
         }
 	}
     
-    public void keyReleased(KeyEvent e) {
-        
-        if(player == 2){
-            if (e.getKeyCode() == KeyEvent.VK_A){
-                if(xa == -1)
-                    xa = 0;
-            }
-            if (e.getKeyCode() == KeyEvent.VK_D){
-                if(xa == 1)
-                    xa = 0;
-            }
-            if (e.getKeyCode() == KeyEvent.VK_W){
-                if(ya == -1)
-                    ya = 0;
-            }
-            if (e.getKeyCode() == KeyEvent.VK_S){
-                if(ya == 1)
-                    ya = 0;
-            }
+    public void keyReleased(int control) {
+        if(control == 0){
+            xa = 0;
         }
-        else if(player == 1){
-            if (e.getKeyCode() == KeyEvent.VK_LEFT){
-                if(xa == -1)
-                    xa = 0;
-            }
-            if (e.getKeyCode() == KeyEvent.VK_RIGHT){
-                if(xa == 1)
-                    xa = 0;
-            }
-            if (e.getKeyCode() == KeyEvent.VK_UP){
-                if(ya == -1)
-                    ya = 0;
-            }
-            if (e.getKeyCode() == KeyEvent.VK_DOWN){
-                if(ya == 1)
-                    ya = 0;
-            }
+        else if(control == 1){
+            xa = 0;
         }
-        
+        else if(control == 2){
+            ya = 0;
+        }
+        else if(control == 3){
+            ya = 0;
+        }
 	}
 }
