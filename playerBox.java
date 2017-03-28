@@ -8,18 +8,31 @@ public class playerBox{
 	int y = 20;
 	int xa = 0;
 	int ya = 0;
+    boolean xmp = false;
+    boolean xpp = false;
+    boolean ymp = false;
+    boolean ypp = false;
+    
 	private ODSYRunner game;
 
-	public playerBox(ODSYRunner game, int playNum) {
+	public playerBox(ODSYRunner game, int playNum, int xInit, int yInit) {
 		this.game = game;
         player = playNum;
-        x = x + 300*(playNum - 1);
+        x = (xInit/4);
+        if(playNum == 2)
+            x = 3*x;
+        y = yInit/2;
 	}
 
-	void move() {
+	public void move() {
 		x = x + 5*xa;
 		y = y + 5*ya;
 	}
+    
+    public void setLoc(int a, int b){
+        x = a;
+        y = b;
+    }
 
 	public void paint(Graphics2D g) {
 		g.fillRect(x, y, 30, 30);
@@ -28,30 +41,50 @@ public class playerBox{
     public void keyPressed(int control) {
         if(control == 0){
             xa = -1;
+            xmp = true;
         }
         else if(control == 1){
             xa = 1;
+            xpp = true;
         }
         else if(control == 2){
             ya = -1;
+            ymp = true;
         }
         else if(control == 3){
             ya = 1;
+            ypp = true;
         }
 	}
     
     public void keyReleased(int control) {
         if(control == 0){
-            xa = 0;
+            xmp = false;
+            if(!xpp)
+                xa = 0;
+            else
+                xa = 1;
         }
         else if(control == 1){
-            xa = 0;
+            xpp = false;
+            if(!xmp)
+                xa = 0;
+            else
+                xa = -1;
         }
         else if(control == 2){
-            ya = 0;
+            ymp = false;
+            if(!ypp)
+                ya = 0;
+            else
+                ya = 1;
         }
         else if(control == 3){
-            ya = 0;
+            ypp = false;
+            if(!ymp)
+                ya = 0;
+            else
+                ya = -1;
         }
 	}
 }
