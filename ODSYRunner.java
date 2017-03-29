@@ -124,6 +124,13 @@ public class ODSYRunner extends JPanel {
         return -1;
     }
     
+    private boolean ball1Collide(){
+        return false;
+    }
+    
+    private boolean ball2Collide(){
+        return false;
+    }
     
     @Override
     public void paint(Graphics g) {//
@@ -157,7 +164,12 @@ public class ODSYRunner extends JPanel {
             //INSERT FUNCTION HERE TO GET INPUT FROM CONTROLLER
             
             //check for colisions
-            
+            if(ball1Collide()){
+                pongBall.setDirection(true);
+            }
+            if(ball2Collide()){
+                pongBall.setDirection(false);
+            }
             
             //repaint everything
             game.moveBox();
