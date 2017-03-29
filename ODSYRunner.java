@@ -1,6 +1,8 @@
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.awt.*;
+import java.lang.*;
 
 @SuppressWarnings("serial")
 public class ODSYRunner extends JPanel {
@@ -37,6 +39,9 @@ public class ODSYRunner extends JPanel {
     //midline object
     midLine mid = new midLine(this);
     
+    //ball object
+    ball pongBall = new ball(this);
+    
     int k = 0;
     
     //constructor
@@ -53,19 +58,22 @@ public class ODSYRunner extends JPanel {
                     return;
                 else if(keyA < 4)
                     box1.keyReleased(keyA);
-				else
+				else if(keyA < 8)
                     box2.keyReleased(keyA%4);
+                else if(keyA == 8)
+                    pongBall.addSpin();
+                else if(keyA == 9)
+                    pongBall.addSpeed();
 			}
             
 			@Override
 			public void keyPressed(KeyEvent e) {
-                System.out.println(k++);
                 int keyB = detPlayerAction(e);
                 if(keyB == -1)
                     return;
                 else if(keyB < 4)
                     box1.keyPressed(keyB);
-                else
+                else if(keyB < 8)
 				    box2.keyPressed((keyB%4));
 			}
 		});
@@ -78,15 +86,19 @@ public class ODSYRunner extends JPanel {
         box2.move();
 	}
     
+    private void moveBall(){
+        pongBall.move();
+    }
+    
     private int detPlayerAction(KeyEvent e){
         int a = e.getKeyCode();
-        if (a == KeyEvent.VK_J)
+        if (a == KeyEvent.VK_A)
             return 0;
-        if (a == KeyEvent.VK_L)
+        if (a == KeyEvent.VK_D)
             return 1;
-        if (a == KeyEvent.VK_I)
+        if (a == KeyEvent.VK_W)
             return 2;
-        if (a == KeyEvent.VK_K)
+        if (a == KeyEvent.VK_S)
             return 3;
         if (a == KeyEvent.VK_LEFT)
             return 4;
@@ -96,6 +108,15 @@ public class ODSYRunner extends JPanel {
             return 6;
         if (a == KeyEvent.VK_DOWN)
             return 7;
+        
+        if (a == KeyEvent.VK_MINUS)
+            return 8;
+        
+        
+        if (a == KeyEvent.VK_0)
+            return 9;
+        
+        
         if (a == KeyEvent.VK_ESCAPE)
             System.exit(0);
         
@@ -112,9 +133,14 @@ public class ODSYRunner extends JPanel {
             RenderingHints.VALUE_ANTIALIAS_ON);
         
         //Call paint method of all actors
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect( 0, 0, xSize, ySize);
+        
+        g2d.setColor(Color.WHITE);
         box1.paint(g2d);
         box2.paint(g2d);
         mid.paint(g2d);
+        pongBall.paint(g2d);
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -130,7 +156,12 @@ public class ODSYRunner extends JPanel {
             
             //INSERT FUNCTION HERE TO GET INPUT FROM CONTROLLER
             
+            //check for colisions
+            
+            
+            //repaint everything
             game.moveBox();
+            game.moveBall();
             game.repaint();
             Thread.sleep(5);
         }

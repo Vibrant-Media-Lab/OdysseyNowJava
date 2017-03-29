@@ -1,31 +1,49 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.land.Math;
+import java.lang.Math;
 
 public class ball{
     int spin = 0;
     boolean directionRight = true;
-    int speed = 5;
-    int x;
-    int y;
+    double speed = 0.5;
+    double x;
+    double y;
     
-    public ball(){
-        
+    private ODSYRunner game;
+    
+    public ball(ODSYRunner in){
+        game = in;
+        x = game.xSize/2;
+        y = game.ySize/2;
     }
     
     public void move(){
         if(directionRight){
-            x = x + speed*(Math.cos(spin));
-            y = y - speed*(Math.sin(spin));
+            x = x + (speed*(Math.cos(spin)));
+            y = y + (speed*(Math.sin(spin)));
         }
         else{
-            x = x - speed*(Math.cos(spin));
-            y = y + speed*(Math.sin(spin));
+            x = x - (speed*(Math.cos(spin)));
+            y = y - (speed*(Math.sin(spin)));
+        }
+    }
+    
+    public void keyTyped(int a){
+        if(a == 8){
+            addSpin();
         }
     }
     
     public void setSpeed(int newSpeed){
         speed = newSpeed;
+    }
+    
+    public void addSpin(){
+        spin = spin + 50;
+    }
+    
+    public void addSpeed(){
+        speed++;
     }
     
     public void setDirection(boolean dir){
@@ -43,7 +61,7 @@ public class ball{
     
     
     public void paint(Graphics2D g) {
-            g.fillOval(x, y, 30, 30);
+            g.fillOval( (int)Math.floor(x), (int)Math.floor(y), 30, 30);
     }
 
 }
