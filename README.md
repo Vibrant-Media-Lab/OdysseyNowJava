@@ -16,6 +16,8 @@ Eventually, the game will be packaged into an executable, but for we just have j
   Adjust Ball English with -
   
   Adjust Ball Speed with 0
+  
+  Exit the game with ESCAPE
 
 
 # How to run a java file
