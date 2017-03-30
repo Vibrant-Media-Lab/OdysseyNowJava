@@ -3,11 +3,13 @@ import java.awt.event.*;
 import java.lang.Math;
 
 public class ball{
-    int spin = 0;
+    int spin1 = 0;
+    int spin2 = 0;
     boolean directionRight = true;
     double speed = 0.5;
     double x;
     double y;
+    int size = 30;
     
     private ODSYRunner game;
     
@@ -19,12 +21,12 @@ public class ball{
     
     public void move(){
         if(directionRight){
-            x = x + (speed*(Math.cos(spin)));
-            y = y + (speed*(Math.sin(spin)));
+            x = x + (speed*(Math.cos(spin1)));
+            y = y + (speed*(Math.sin(spin1)));
         }
         else{
-            x = x - (speed*(Math.cos(spin)));
-            y = y - (speed*(Math.sin(spin)));
+            x = x - (speed*(Math.cos(spin2)));
+            y = y - (speed*(Math.sin(spin2)));
         }
     }
     
@@ -39,7 +41,7 @@ public class ball{
     }
     
     public void addSpin(){
-        spin = spin + 50;
+        spin1 = spin1 + 50;
     }
     
     public void addSpeed(){
@@ -56,12 +58,23 @@ public class ball{
     }
     
     public void setSpin(int spinIn){
-        spin = spinIn;
+        spin1 = spinIn;
     }
     
+    public int getX(){
+        return (int)x;
+    }
+    
+    public int getY(){
+        return (int)y;
+    }
+    
+    public int getSize(){
+        return size;
+    }
     
     public void paint(Graphics2D g) {
-            g.fillOval( (int)Math.floor(x), (int)Math.floor(y), 30, 30);
+            g.fillOval( (int)Math.floor(x), (int)Math.floor(y), size, size);
     }
 
 }

@@ -4,6 +4,7 @@ import java.awt.event.*;
 public class playerBox{
     int player;
     
+    int speed;
 	int x = 20;
 	int y = 20;
 	int xa = 0;
@@ -12,6 +13,8 @@ public class playerBox{
     boolean xpp = false;
     boolean ymp = false;
     boolean ypp = false;
+    
+    int size = 50;
     
 	private ODSYRunner game;
 
@@ -35,7 +38,7 @@ public class playerBox{
     }
 
 	public void paint(Graphics2D g) {
-		g.fillRect(x, y, 30, 30);
+		g.fillRect(x, y, size, size);
 	}
     
     public void keyPressed(int control) {
@@ -87,4 +90,34 @@ public class playerBox{
                 ya = -1;
         }
 	}
+    
+    public int getX(){
+        return x;
+    }
+    
+    public int getY(){
+        return y;
+    }
+    
+    public int getSize(){
+        return size;
+    }
+    
+    public void checkCollide(){
+        ball pong = game.pongBall;
+        int boxCenterX = x + size/2; 
+        int ballCenterX = pong.getX() + pong.getSize()/2; 
+        
+        if(Math.abs(boxCenterX - ballCenterX) <= (pong.getSize()/2 + size/2)){
+            int boxCenterY = y + size/2;
+            int ballCenterY = pong.getY() + pong.getSize()/2;
+            if(Math.abs(boxCenterY - ballCenterY) <= (pong.getSize()/2 + size/2)){
+                if(player == 1)
+                    pong.setDirection(true);
+                else
+                    pong.setDirection(false);
+                System.out.println("Intersect with box!");
+            }
+        }
+    }
 }

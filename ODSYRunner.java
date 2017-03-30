@@ -44,7 +44,7 @@ public class ODSYRunner extends JPanel {
     
     int k = 0;
     
-    //constructor
+    //constructor, full of keyboard functions
     public ODSYRunner(){
         addKeyListener(new KeyListener() {
 			@Override
@@ -86,8 +86,14 @@ public class ODSYRunner extends JPanel {
         box2.move();
 	}
     
+    //calls movement method for ball
     private void moveBall(){
         pongBall.move();
+    }
+    
+    private void checkCollide(){
+        box1.checkCollide();
+        box2.checkCollide();
     }
     
     private int detPlayerAction(KeyEvent e){
@@ -124,14 +130,6 @@ public class ODSYRunner extends JPanel {
         return -1;
     }
     
-    private static void ball1Collide(){
-        
-    }
-    
-    private static void ball2Collide(){
-        
-    }
-    
     @Override
     public void paint(Graphics g) {//
         super.paint(g);
@@ -164,8 +162,7 @@ public class ODSYRunner extends JPanel {
             //INSERT FUNCTION HERE TO GET INPUT FROM CONTROLLER
             
             //check for colisions
-            ball1Collide();
-            ball2Collide();
+            game.checkCollide();
             
             //repaint everything
             game.moveBox();
