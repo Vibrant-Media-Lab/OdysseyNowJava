@@ -7,25 +7,25 @@ import java.lang.*;
 @SuppressWarnings("serial")
 public class ODSYRunner extends JPanel {
     
-    //SYSTEM CONFIG
-    boolean PlayerSpotLeft = true; //: [yes or no] (does it appear or not)
-    boolean PlayerSpotRight = true; // [yes or no]
-    boolean ballInit = false; // [yes or no]
-    boolean ballLarge = false; // Type: [normal, large]
-    boolean linePresent = true; // [yes or no]
-    int BallPlayerCollisionType = 0; // [bounce, passthrough, extinguish]
-    boolean PlayerPlayerCollision = false; // [passthrough, extinguish] (note: only the Right Player Spot is extinguished)
-    boolean BallLineCollision = false; // [passthrough, bounce]
-    int LinePosition = 400;// [center, left, #, moving] (#= numerical position on screen from left to right, maybe 256 steps) (moving= starts on left of screen and slowly moves toward the right until a Reset button is hit)
+    //GAME CONFIG
+    boolean PlayerSpotLeft = true;
+    boolean PlayerSpotRight = true; 
+    boolean ballInit = true; 
+    boolean ballLarge = false; 
+    boolean linePresent = true; 
+    int BallPlayerCollisionType = 0;
+    boolean PlayerPlayerCollision = false; 
+    boolean BallLineCollision = false; 
+    int LinePosition = 400;
     boolean lineMoving = false;
-    int LineHeight = 10; // [full, #] [#= numerical value, 10 steps]
-    int PlayerSpotSpeed = 0; //: [#] (10 increments; determines the rate of travel as a player spot moves to the position indicated by the controller input)
-    int Inertia = 0; //: [#] (indicates the rate of velocity decay, or the momentum that a player spot has beyond actual user control; this is complex; see actual Cards 6 and 12 for behavior to emulate; a value of 0 should indicate no inertia)
-    boolean LeftReset = false; //: [defines behavior of the Left Controller's Reset button: usually serves the ball from left to right]
-    boolean RightReset = false; //: [same options, except also: visible (makes Right Player Spot visible if it is in an extinguished state)]
-    boolean Accessory = false; //: [yes or no]
-    boolean AccessoryHitExtinguish = false; //: [ball, Player Dot Left, Player Dot Right] (behavior when gun hit is triggered)
-    boolean AccessoryResetAction = false; //: [reveal ball, reveal player dot]
+    int LineHeight = 10; 
+    int PlayerSpotSpeed = 0;
+    int Inertia = 0; 
+    boolean LeftReset = false; 
+    boolean RightReset = false; 
+    boolean Accessory = false; 
+    boolean AccessoryHitExtinguish = false; 
+    boolean AccessoryResetAction = false; 
 
     
     //Window size
@@ -42,7 +42,9 @@ public class ODSYRunner extends JPanel {
     //ball object
     ball pongBall = new ball(this);
     
-    int k = 0;
+    //game number
+    int gameChoice = 1;
+    int choiceTimer = 0;
     
     //constructor, full of keyboard functions
     public ODSYRunner(){
@@ -60,10 +62,21 @@ public class ODSYRunner extends JPanel {
                     box1.keyReleased(keyA);
 				else if(keyA < 8)
                     box2.keyReleased(keyA%4);
-                else if(keyA == 8)
-                    pongBall.addSpin();
-                else if(keyA == 9)
-                    pongBall.addSpeed();
+                else if(keyA == 13){
+                    if(gameChoice == 6)
+                        gameChoice = 1;
+                    else
+                        gameChoice++;
+                    choiceTimer = 1000;
+                }
+                else if(keyA == 12){
+                    if(gameChoice == 1)
+                        gameChoice = 6;
+                    else
+                        gameChoice--;
+                    choiceTimer = 1000;
+                }
+                    
 			}
             
 			@Override
@@ -75,6 +88,14 @@ public class ODSYRunner extends JPanel {
                     box1.keyPressed(keyB);
                 else if(keyB < 8)
 				    box2.keyPressed((keyB%4));
+                else if(keyB == 8)
+                    pongBall.addSpin1();
+                else if(keyB == 9)
+                    pongBall.subtractSpin1();
+                else if(keyB == 10)
+                    pongBall.addSpin2();
+                else if(keyB == 11)
+                    pongBall.subtractSpin2();
 			}
 		});
 		setFocusable(true);
@@ -115,19 +136,29 @@ public class ODSYRunner extends JPanel {
         if (a == KeyEvent.VK_DOWN)
             return 7;
         
-        if (a == KeyEvent.VK_MINUS)
+        if (a == KeyEvent.VK_2)
             return 8;
-        
-        
-        if (a == KeyEvent.VK_0)
+        if (a == KeyEvent.VK_3)
             return 9;
+        if (a == KeyEvent.VK_PERIOD)
+            return 10;
+        if (a == KeyEvent.VK_SLASH)
+            return 11;
         
+        if (a == KeyEvent.VK_OPEN_BRACKET)
+            return 12;
+        if (a == KeyEvent.VK_CLOSE_BRACKET)
+            return 13;
         
         if (a == KeyEvent.VK_ESCAPE)
             System.exit(0);
         
         
         return -1;
+    }
+    
+    public void decrementTimer(){
+        choiceTimer--;
     }
     
     @Override
@@ -146,15 +177,25 @@ public class ODSYRunner extends JPanel {
         box2.paint(g2d);
         mid.paint(g2d);
         pongBall.paint(g2d);
+        
+        if(choiceTimer > 0)
+            g2d.drawString("" + gameChoice, 50, 50);
+            //paint choice number
+        decrementTimer();
     }
 
     public static void main(String[] args) throws InterruptedException {
         JFrame frame = new JFrame("ODSY Redux");
         ODSYRunner game = new ODSYRunner();
+        
+        //get config
+        
         frame.add(game);
         frame.setSize(xSize, ySize);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        //get game1
 
         while (true) {
             //call 

@@ -31,17 +31,26 @@ public class ball{
     }
     
     public void keyTyped(int a){
-        if(a == 8){
-            addSpin();
-        }
     }
     
     public void setSpeed(int newSpeed){
         speed = newSpeed;
     }
     
-    public void addSpin(){
+    public void addSpin1(){
         spin1 = spin1 + 50;
+    }
+    
+    public void addSpin2(){
+        spin2 = spin2 + 50;
+    }
+    
+    public void subtractSpin1(){
+        spin1 = spin1 - 50;
+    }
+    
+    public void subtractSpin2(){
+        spin2 = spin2 - 50;
     }
     
     public void addSpeed(){
@@ -57,7 +66,11 @@ public class ball{
         y = yIn;
     }
     
-    public void setSpin(int spinIn){
+    public void setSpin1(int spinIn){
+        spin1 = spinIn;
+    }
+    
+    public void setSpin2(int spinIn){
         spin1 = spinIn;
     }
     
