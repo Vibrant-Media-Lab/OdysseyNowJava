@@ -9,13 +9,11 @@ Eventually, the game will be packaged into an executable, but for we just have j
 # Controls
   Player 1
   WASD controls movement
+  Adjust Ball English with 2 and 3
   
   Player 2
   Arrow keys control movement
-  
-  Adjust Ball English with -
-  
-  Adjust Ball Speed with 0
+  Adjust Ball English with . and /
   
   Exit the game with ESCAPE
   
