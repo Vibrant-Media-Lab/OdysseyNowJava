@@ -6,7 +6,7 @@ public class ball{
     int spin1 = 0;
     int spin2 = 0;
     boolean directionRight = true;
-    double speed = 0.5;
+    double speed = 3;
     double x;
     double y;
     int size = 30;
@@ -64,6 +64,18 @@ public class ball{
     public void setPosition(int xIn, int yIn){
         x = xIn;
         y = yIn;
+    }
+    
+    public void reset1(){
+        x = (game.box1).getX();
+        y = (game.box1).getY();
+        directionRight = true;
+    }
+    
+    public void reset2(){
+        x = (game.box2).getX();
+        y = (game.box2).getY();
+        directionRight = false;
     }
     
     public void setSpin1(int spinIn){

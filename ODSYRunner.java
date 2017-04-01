@@ -2,6 +2,7 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
+import java.awt.Robot;
 import java.lang.*;
 
 @SuppressWarnings("serial")
@@ -96,6 +97,10 @@ public class ODSYRunner extends JPanel {
                     pongBall.addSpin2();
                 else if(keyB == 11)
                     pongBall.subtractSpin2();
+                else if(keyB == 14)
+                    pongBall.reset1();
+                else if(keyB == 15)
+                    pongBall.reset2();
 			}
 		});
 		setFocusable(true);
@@ -150,6 +155,11 @@ public class ODSYRunner extends JPanel {
         if (a == KeyEvent.VK_CLOSE_BRACKET)
             return 13;
         
+        if (a == KeyEvent.VK_R)
+            return 14;
+        if (a == KeyEvent.VK_COMMA)
+            return 15;
+        
         if (a == KeyEvent.VK_ESCAPE)
             System.exit(0);
         
@@ -159,6 +169,14 @@ public class ODSYRunner extends JPanel {
     
     public void decrementTimer(){
         choiceTimer--;
+    }
+    
+    public void pressCommand(){
+        try{
+            Robot rob = new Robot();
+            rob.keyPress(KeyEvent.VK_META);
+        }
+        catch(Exception e){System.out.println("Error: couldn't press command");}
     }
     
     @Override
@@ -196,7 +214,7 @@ public class ODSYRunner extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         //get game1
-
+        
         while (true) {
             //call 
             
@@ -210,6 +228,7 @@ public class ODSYRunner extends JPanel {
             game.moveBall();
             game.repaint();
             Thread.sleep(5);
+            game.pressCommand();
         }
     }
 }

@@ -116,7 +116,7 @@ public class playerBox{
                     pong.setDirection(true);
                 else
                     pong.setDirection(false);
-                System.out.println("Intersect with box!");
+                //System.out.println("Intersect with box!");
             }
         }
     }

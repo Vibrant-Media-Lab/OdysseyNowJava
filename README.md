@@ -7,11 +7,15 @@ The game is meant to be played with our analog controllers, however, keyboard co
 Eventually, the game will be packaged into an executable, but for we just have java files that require a little extra work to run.
 
 # Controls
+
+
   Player 1
   
   WASD controls movement
   
   Adjust Ball English with 2 and 3
+  
+  Reset with R
   
   Player 2
   
@@ -19,10 +23,11 @@ Eventually, the game will be packaged into an executable, but for we just have j
   
   Adjust Ball English with . and /
   
-  Exit the game with ESCAPE
+  Reset with ,
   
-# Weird Bug
-  For whatever reason, the WASD controls get sticky. Basically, if you use them for 5-10 seconds or so, they will suddenly stop, while the arrow key controls never have this issue. I have not yet figured out why this happened, but I do have a temp fix that seems to work! If your WASD controls stop working, hold down Command (on macOS) or Control (on other OS's) and press S to go down; this seems to unstick the controls!
+  
+  
+  Exit the game with ESCAPE
 
 # How to run a java file
   If you're not familiar with programming, this might be a little jarring, but I'll try to be as user friendly as possible!
