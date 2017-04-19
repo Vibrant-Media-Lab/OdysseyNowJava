@@ -226,7 +226,7 @@ public class ODSYRunner extends JPanel {
     
     public void setPlayerDest(){
         box1.setDest(xKnob, yKnob);
-        ball.setSpin1(englishKnob);
+        pongBall.setSpin1(englishKnob);
     }
 
     public static void main(String[] args) throws InterruptedException {
