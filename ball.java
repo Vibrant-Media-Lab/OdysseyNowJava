@@ -6,7 +6,7 @@ public class ball{
     int spin1 = 0;
     int spin2 = 0;
     boolean directionRight = true;
-    double speed = 3;
+    double speed = 20;
     double x;
     double y;
     int size = 30;
@@ -17,6 +17,8 @@ public class ball{
         game = in;
         x = game.xSize/2;
         y = game.ySize/2;
+        //size = (game.box1).getSize();
+        //size = (7/8)*size;
     }
     
     public void move(){
@@ -98,8 +100,12 @@ public class ball{
         return size;
     }
     
+    public void setSpin1(int a){
+            spin1 = a;
+    }
+    
     public void paint(Graphics2D g) {
-            g.fillOval( (int)Math.floor(x), (int)Math.floor(y), size, size);
+            g.fillRect( (int)Math.floor(x), (int)Math.floor(y), size, size);
     }
 
 }

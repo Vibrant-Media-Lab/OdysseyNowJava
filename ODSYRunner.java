@@ -9,6 +9,8 @@ import java.lang.*;
 public class ODSYRunner extends JPanel {
     
     //GAME CONFIG
+    static boolean useAnalog = false;
+    
     boolean PlayerSpotRight = true;
     
     boolean ballInit = true; 
@@ -36,8 +38,8 @@ public class ODSYRunner extends JPanel {
     static int ySize = 600;
     
     //player objects
-    playerBox box1 = new playerBox(this, 1, xSize, ySize);
-    playerBox box2 = new playerBox(this, 2, xSize, ySize);
+    playerBox box1 = new playerBox(this, 1, xSize, ySize, useAnalog);
+    playerBox box2 = new playerBox(this, 2, xSize, ySize, useAnalog);
     
     //midline object
     midLine mid = new midLine(this);
@@ -48,6 +50,10 @@ public class ODSYRunner extends JPanel {
     //game number
     int gameChoice = 1;
     int choiceTimer = 0;
+    
+    //controller variables
+    String[] controllerValues = new String[8];
+    int RV, RE, RH, xKnob, englishKnob, yKnob;
     
     //constructor, full of keyboard functions
     public ODSYRunner(){
@@ -205,6 +211,23 @@ public class ODSYRunner extends JPanel {
             //paint choice number
         decrementTimer();
     }
+    
+    public void setControllerValues(){
+        controllerValues = SerialInput.getInput();
+        
+        RV = Integer.parseInt(controllerValues[4]);    
+        RE = Integer.parseInt(controllerValues[5]);
+        RH = Integer.parseInt(controllerValues[3]);
+        
+        xKnob = Integer.parseInt(controllerValues[1]);
+        englishKnob = Integer.parseInt(controllerValues[0]);
+        yKnob = Integer.parseInt(controllerValues[2]);
+    }
+    
+    public void setPlayerDest(){
+        box1.setDest(xKnob, yKnob);
+        ball.setSpin1(englishKnob);
+    }
 
     public static void main(String[] args) throws InterruptedException {
         JFrame frame = new JFrame("ODSY Redux");
@@ -220,21 +243,16 @@ public class ODSYRunner extends JPanel {
         //get game1
         
         
-        String[] controllerValues = new String[8];
         while (true) {
             //call 
             
             //INSERT FUNCTION HERE TO GET INPUT FROM CONTROLLER
-			controllerValues = SerialInput.getInput();
-			int RV, RE, RH, one, two, three;
-			RV = Integer.parseInt(controllerValues[4]);
-			RE = Integer.parseInt(controllerValues[5]);
-			RH = Integer.parseInt(controllerValues[3]);
-			one = Integer.parseInt(controllerValues[1]);
-			two = Integer.parseInt(controllerValues[0]);
-			three = Integer.parseInt(controllerValues[2]);
+            if(useAnalog){
+                setControllerValues();
+                setPlayerDest();
+            }
             
-            
+            //System.out.println("Declared serial inputs");
             //check for colisions
             game.checkCollide();
             

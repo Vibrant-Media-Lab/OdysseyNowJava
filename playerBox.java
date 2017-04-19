@@ -9,27 +9,35 @@ public class playerBox{
 	int y = 20;
 	int xa = 0;
 	int ya = 0;
+    
     boolean xmp = false;
     boolean xpp = false;
     boolean ymp = false;
     boolean ypp = false;
     
+    int xDest = 20;
+    int yDest = 20;
+    
+    boolean analog;
+    
     int size = 50;
     
 	private ODSYRunner game;
 
-	public playerBox(ODSYRunner game, int playNum, int xInit, int yInit) {
+	public playerBox(ODSYRunner game, int playNum, int xInit, int yInit, boolean an) {
 		this.game = game;
         player = playNum;
         x = (xInit/4);
         if(playNum == 2)
             x = 3*x;
         y = yInit/2;
+        analog = an;
 	}
 
 	public void move() {
 		x = x + 5*xa;
 		y = y + 5*ya;
+        if(analog)
 	}
     
     public void setLoc(int a, int b){
@@ -119,5 +127,13 @@ public class playerBox{
                 //System.out.println("Intersect with box!");
             }
         }
+    }
+    
+    public void setDest(int a, int b){
+        double ratioA = ((double)a)/((double) 1024);
+        double ratioB = ((double)b)/((double) 1024);
+        
+        xDest = ratioA*(game.xSize);
+        yDest = ratioB*(game.ySize);
     }
 }
