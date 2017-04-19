@@ -37,7 +37,10 @@ public class playerBox{
 	public void move() {
 		x = x + 5*xa;
 		y = y + 5*ya;
-        if(analog)
+        if(analog){
+            x = xDest;
+            y = yDest;
+        }
 	}
     
     public void setLoc(int a, int b){
