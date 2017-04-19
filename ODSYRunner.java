@@ -248,8 +248,8 @@ public class ODSYRunner extends JPanel {
             
             //INSERT FUNCTION HERE TO GET INPUT FROM CONTROLLER
             if(useAnalog){
-                setControllerValues();
-                setPlayerDest();
+                game.setControllerValues();
+                game.setPlayerDest();
             }
             
             //System.out.println("Declared serial inputs");

@@ -136,7 +136,7 @@ public class playerBox{
         double ratioA = ((double)a)/((double) 1024);
         double ratioB = ((double)b)/((double) 1024);
         
-        xDest = ratioA*(game.xSize);
-        yDest = ratioB*(game.ySize);
+        xDest = (int)(ratioA*(game.xSize));
+        yDest = (int)(ratioB*(game.ySize));
     }
 }
