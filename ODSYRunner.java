@@ -9,21 +9,23 @@ import java.lang.*;
 public class ODSYRunner extends JPanel {
     
     //GAME CONFIG
-    boolean PlayerSpotLeft = true;
-    boolean PlayerSpotRight = true; 
+    boolean PlayerSpotRight = true;
+    
     boolean ballInit = true; 
     boolean ballLarge = false; 
-    boolean linePresent = true; 
-    int BallPlayerCollisionType = 0;
-    boolean PlayerPlayerCollision = false; 
-    boolean BallLineCollision = false; 
+    
+    boolean linePresent = true;
     int LinePosition = 400;
     boolean lineMoving = false;
     int LineHeight = 10; 
+    
+    int BallPlayerCollisionType = 0;
+    boolean PlayerPlayerCollision = false; 
+    boolean BallLineCollision = false;
+    
     int PlayerSpotSpeed = 0;
     int Inertia = 0; 
-    boolean LeftReset = false; 
-    boolean RightReset = false; 
+    
     boolean Accessory = false; 
     boolean AccessoryHitExtinguish = false; 
     boolean AccessoryResetAction = false; 
@@ -119,7 +121,8 @@ public class ODSYRunner extends JPanel {
     
     private void checkCollide(){
         box1.checkCollide();
-        box2.checkCollide();
+        if(PlayerSpotRight)
+            box2.checkCollide();
     }
     
     private int detPlayerAction(KeyEvent e){
@@ -192,7 +195,8 @@ public class ODSYRunner extends JPanel {
         
         g2d.setColor(Color.WHITE);
         box1.paint(g2d);
-        box2.paint(g2d);
+        if(PlayerSpotRight)
+            box2.paint(g2d);
         mid.paint(g2d);
         pongBall.paint(g2d);
         
@@ -215,10 +219,21 @@ public class ODSYRunner extends JPanel {
         
         //get game1
         
+        
+        String[] controllerValues = new String[8];
         while (true) {
             //call 
             
             //INSERT FUNCTION HERE TO GET INPUT FROM CONTROLLER
+			controllerValues = SerialInput.getInput();
+			int RV, RE, RH, one, two, three;
+			RV = Integer.parseInt(controllerValues[4]);
+			RE = Integer.parseInt(controllerValues[5]);
+			RH = Integer.parseInt(controllerValues[3]);
+			one = Integer.parseInt(controllerValues[1]);
+			two = Integer.parseInt(controllerValues[0]);
+			three = Integer.parseInt(controllerValues[2]);
+            
             
             //check for colisions
             game.checkCollide();
