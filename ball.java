@@ -6,7 +6,10 @@ public class ball{
     int spin1 = 0;
     int spin2 = 0;
     boolean directionRight = true;
-    double speed = 20;
+    
+    double speed = 5;
+    double decelRate = 0.03;
+    
     double x;
     double y;
     int size = 30;
@@ -22,14 +25,19 @@ public class ball{
     }
     
     public void move(){
+        speed -= decelRate;
+        if(speed < 0)
+            speed = 0;
+        
         if(directionRight){
-            x = x + (speed*(Math.cos(spin1)));
-            y = y + (speed*(Math.sin(spin1)));
+            x = x + (speed*(Math.cos(Math.toRadians(spin1))));
+            y = y + (speed*(Math.sin(Math.toRadians(spin1))));
         }
         else{
-            x = x - (speed*(Math.cos(spin2)));
-            y = y - (speed*(Math.sin(spin2)));
+            x = x - (speed*(Math.cos(Math.toRadians(spin2))));
+            y = y - (speed*(Math.sin(Math.toRadians(spin2))));
         }
+        
     }
     
     public void keyTyped(int a){
@@ -40,19 +48,31 @@ public class ball{
     }
     
     public void addSpin1(){
-        spin1 = spin1 + 50;
+        spin1 = spin1 + 1;
+        if(spin1 > 45){
+            spin1 = 45;
+        }
     }
     
     public void addSpin2(){
-        spin2 = spin2 + 50;
+        spin2 = spin2 + 1;
+        if(spin2 > 45){
+            spin2 = 45;
+        }
     }
     
     public void subtractSpin1(){
-        spin1 = spin1 - 50;
+        spin1 = spin1 - 1;
+        if(spin1< -45){
+            spin1 = -45;
+        }
     }
     
     public void subtractSpin2(){
-        spin2 = spin2 - 50;
+        spin2 = spin2 - 1;
+        if(spin2 < -45){
+            spin2 = -45;
+        }
     }
     
     public void addSpeed(){
@@ -61,6 +81,11 @@ public class ball{
     
     public void setDirection(boolean dir){
         directionRight = dir;
+        speed = 5;
+    }
+    
+    public boolean getDirection(){
+        return directionRight;
     }
     
     public void setPosition(int xIn, int yIn){
@@ -80,12 +105,12 @@ public class ball{
         directionRight = false;
     }
     
-    public void setSpin1(int spinIn){
-        spin1 = spinIn;
-    }
-    
-    public void setSpin2(int spinIn){
-        spin1 = spinIn;
+    public void setSpin(int spinA, int spinB){
+        double ratioA = ((double)spinA)/((double)1024);
+        double ratioB = ((double)spinB)/((double)1024);
+        
+        spin1 = (int)((ratioA*90) - 45);
+        spin2 = (int)((ratioB*90) - 45);
     }
     
     public int getX(){
@@ -98,10 +123,6 @@ public class ball{
     
     public int getSize(){
         return size;
-    }
-    
-    public void setSpin1(int a){
-            spin1 = a;
     }
     
     public void paint(Graphics2D g) {

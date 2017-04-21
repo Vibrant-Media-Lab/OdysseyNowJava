@@ -4,6 +4,8 @@ import java.awt.event.*;
 import java.awt.*;
 import java.awt.Robot;
 import java.lang.*;
+import java.util.*;
+import jssc.*;
 
 @SuppressWarnings("serial")
 public class ODSYRunner extends JPanel {
@@ -226,7 +228,20 @@ public class ODSYRunner extends JPanel {
     
     public void setPlayerDest(){
         box1.setDest(xKnob, yKnob);
-        pongBall.setSpin1(englishKnob);
+        box2.setDest(RH, RV);
+        pongBall.setSpin(englishKnob, RE);
+    }
+    
+    public void checkForController(){
+        String[] ports = SerialPortList.getPortNames();
+        if(ports != null){
+            for(int i = 0; i < ports.length; i++){
+                if(ports[i].equals("COM3")){
+                    useAnalog = true;
+                    return;
+                }
+            }
+        }
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -239,6 +254,7 @@ public class ODSYRunner extends JPanel {
         frame.setSize(xSize, ySize);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        game.checkForController();
         
         //get game1
         

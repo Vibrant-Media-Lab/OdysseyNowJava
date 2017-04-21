@@ -123,10 +123,14 @@ public class playerBox{
             int boxCenterY = y + size/2;
             int ballCenterY = pong.getY() + pong.getSize()/2;
             if(Math.abs(boxCenterY - ballCenterY) <= (pong.getSize()/2 + size/2)){
-                if(player == 1)
-                    pong.setDirection(true);
-                else
-                    pong.setDirection(false);
+                if(player == 1){
+                    if(!pong.getDirection())
+                        pong.setDirection(true);
+                }
+                else{
+                    if(pong.getDirection())
+                        pong.setDirection(false);
+                }
                 //System.out.println("Intersect with box!");
             }
         }
