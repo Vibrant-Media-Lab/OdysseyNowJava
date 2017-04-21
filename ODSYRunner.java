@@ -12,6 +12,7 @@ public class ODSYRunner extends JPanel {
     
     //GAME CONFIG
     static boolean useAnalog = false;
+    boolean mac = true;
     
     boolean PlayerSpotRight = true;
     
@@ -27,8 +28,9 @@ public class ODSYRunner extends JPanel {
     boolean PlayerPlayerCollision = false; 
     boolean BallLineCollision = false;
     
+    boolean delayedMove = false;
     int PlayerSpotSpeed = 0;
-    int Inertia = 0; 
+    int inertia = 0; 
     
     boolean Accessory = false; 
     boolean AccessoryHitExtinguish = false; 
@@ -277,7 +279,8 @@ public class ODSYRunner extends JPanel {
             game.moveBall();
             game.repaint();
             Thread.sleep(5);
-            game.pressCommand();
+            if(game.mac)
+                game.pressCommand();
         }
     }
 }

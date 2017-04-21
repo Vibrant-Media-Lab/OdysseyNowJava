@@ -4,7 +4,7 @@ import java.awt.event.*;
 public class playerBox{
     int player;
     
-    int speed;
+    int speed = 5;
 	int x = 20;
 	int y = 20;
 	int xa = 0;
@@ -35,11 +35,18 @@ public class playerBox{
 	}
 
 	public void move() {
-		x = x + 5*xa;
-		y = y + 5*ya;
         if(analog){
-            x = xDest;
-            y = yDest;
+            if(game.delayedMove){
+                //I don't want to do this math yet
+            }
+            else{
+                x = xDest;
+                y = yDest;
+            }
+        }
+        else{
+            x = x + speed*xa;
+            y = y + speed*ya;
         }
 	}
     
