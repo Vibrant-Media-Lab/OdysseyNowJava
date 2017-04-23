@@ -13,6 +13,7 @@ public class ODSYRunner extends JPanel {
     //GAME CONFIG
     static boolean useAnalog = false;
     boolean mac = true;
+    int numberOfGames = 15;
     
     boolean PlayerSpotRight = true;
     
@@ -76,11 +77,12 @@ public class ODSYRunner extends JPanel {
 				else if(keyA < 8)
                     box2.keyReleased(keyA%4);
                 else if(keyA == 13){
-                    if(gameChoice == 6)
+                    if(gameChoice == numberOfGames)
                         gameChoice = 1;
                     else
                         gameChoice++;
                     choiceTimer = 1000;
+                    loadGame(gameChoice);
                 }
                 else if(keyA == 12){
                     if(gameChoice == 1)
@@ -190,6 +192,11 @@ public class ODSYRunner extends JPanel {
             rob.keyPress(KeyEvent.VK_META);
         }
         catch(Exception e){System.out.println("Error: couldn't press command");}
+    }
+    
+    public void loadGame(int choice){
+        cardReader reader = new cardReader();
+        reader.read(choice);
     }
     
     @Override

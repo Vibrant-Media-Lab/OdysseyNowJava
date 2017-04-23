@@ -9,10 +9,16 @@ public class ball{
     
     double speed = 5;
     double decelRate = 0.03;
+    double maxSpeed = 7;
     
     double x;
     double y;
     int size = 30;
+    
+    int xMin;
+    int xMax;
+    int yMin;
+    int yMax;
     
     private ODSYRunner game;
     
@@ -20,6 +26,11 @@ public class ball{
         game = in;
         x = game.xSize/2;
         y = game.ySize/2;
+        xMin = (int)(0 - (x/8));
+        xMax = (9/8)*game.xSize;
+        yMin = (int)(0 - (y/8));
+        yMax = (9/8)*game.ySize;
+        
         //size = (game.box1).getSize();
         //size = (7/8)*size;
     }
@@ -37,6 +48,11 @@ public class ball{
             x = x - (speed*(Math.cos(Math.toRadians(spin2))));
             y = y - (speed*(Math.sin(Math.toRadians(spin2))));
         }
+        
+        if(x < xMin){ x = xMin; }
+        if(x > xMax){ x = xMax; }
+        if(y < yMin){ y = yMin; }
+        if(y > yMax){ y = yMax; }
         
     }
     
@@ -81,7 +97,7 @@ public class ball{
     
     public void setDirection(boolean dir){
         directionRight = dir;
-        speed = 5;
+        speed = maxSpeed;
     }
     
     public boolean getDirection(){
@@ -94,15 +110,19 @@ public class ball{
     }
     
     public void reset1(){
-        x = (game.box1).getX();
-        y = (game.box1).getY();
-        directionRight = true;
+        //x = (game.box1).getX();
+        //y = (game.box1).getY();
+        if(!getDirection())
+            setDirection(true);
+        
     }
     
     public void reset2(){
-        x = (game.box2).getX();
-        y = (game.box2).getY();
-        directionRight = false;
+        //x = (game.box2).getX();
+        //y = (game.box2).getY();
+        //directionRight = false;
+        if(getDirection())
+            setDirection(false);
     }
     
     public void setSpin(int spinA, int spinB){

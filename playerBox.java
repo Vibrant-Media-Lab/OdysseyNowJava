@@ -18,6 +18,11 @@ public class playerBox{
     int xDest = 20;
     int yDest = 20;
     
+    int xMin;
+    int xMax;
+    int yMin;
+    int yMax;
+    
     boolean analog;
     
     int size = 50;
@@ -32,6 +37,11 @@ public class playerBox{
             x = 3*x;
         y = yInit/2;
         analog = an;
+        
+        xMin = 0 - ((game.xSize/2)/8);
+        xMax = (9/8)*game.xSize;
+        yMin = 0 - ((game.ySize/2)/8);
+        yMax = (9/8)*game.ySize;
 	}
 
 	public void move() {
@@ -47,6 +57,11 @@ public class playerBox{
         else{
             x = x + speed*xa;
             y = y + speed*ya;
+            
+            if(x < xMin){ x = xMin; }
+            if(x > xMax){ x = xMax; }
+            if(y < yMin){ y = yMin; }
+            if(y > yMax){ y = yMax; }
         }
 	}
     
