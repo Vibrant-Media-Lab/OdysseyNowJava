@@ -25,6 +25,8 @@ Eventually, the game will be packaged into an executable, but for we just have j
   
   Reset with ,
   
+  Cycle through games with [ and ]
+  
   
   
   Exit the game with ESCAPE
