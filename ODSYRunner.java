@@ -12,7 +12,7 @@ public class ODSYRunner extends JPanel {
     
     //GAME CONFIG
     static boolean useAnalog = false;
-    boolean mac = true;
+    boolean mac = true; //set true if playing on macOS
     int numberOfGames = 15;
     
     boolean PlayerSpotRight = true;
@@ -91,6 +91,9 @@ public class ODSYRunner extends JPanel {
                         gameChoice--;
                     choiceTimer = 1000;
                 }
+                else if(keyA == 14 || keyA == 15){
+                    box2.makeVisible();
+                }
                     
 			}
             
@@ -134,7 +137,7 @@ public class ODSYRunner extends JPanel {
     private void checkCollide(){
         box1.checkCollide();
         if(PlayerSpotRight)
-            box2.checkCollide();
+            box2.checkCollide();   
     }
     
     private int detPlayerAction(KeyEvent e){
@@ -214,8 +217,10 @@ public class ODSYRunner extends JPanel {
         box1.paint(g2d);
         if(PlayerSpotRight)
             box2.paint(g2d);
-        mid.paint(g2d);
-        pongBall.paint(g2d);
+        if(linePresent)
+            mid.paint(g2d);
+        if(ballInit)
+            pongBall.paint(g2d);
         
         if(choiceTimer > 0)
             g2d.drawString("" + gameChoice, 50, 50);
