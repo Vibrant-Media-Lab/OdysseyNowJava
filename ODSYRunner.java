@@ -22,7 +22,7 @@ public class ODSYRunner extends JPanel {
     boolean PlayerPlayerCollision = false; 
     int ballLineCollision = 0;
     
-    boolean inertia = true;
+    boolean inertia = false;
     
     boolean Accessory = false; 
     boolean AccessoryHitExtinguish = false; //false is ball, true is p2 
