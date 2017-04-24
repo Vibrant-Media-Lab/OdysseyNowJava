@@ -99,6 +99,11 @@ public class playerBox{
             if(x > xMax){ x = xMax; }
             if(y < yMin){ y = yMin; }
             if(y > yMax){ y = yMax; }
+            
+            if(xDest < xMin){ xDest = xMin; }
+            if(xDest > xMax){ xDest = xMax; }
+            if(yDest < yMin){ yDest = yMin; }
+            if(yDest > yMax){ yDest = yMax; }
         }
 	}
     
