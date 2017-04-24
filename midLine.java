@@ -14,7 +14,7 @@ public class midLine{
 		this.game = game;
         x = game.xSize/2;
         left = game.xSize/4;
-        width = game.xSize/25;
+        width = game.xSize/40;
         center = x;
         full = true;
 	}
@@ -47,9 +47,9 @@ public class midLine{
 	public void paint(Graphics2D g) {
         if(game.linePresent){
             if(full)
-                g.fillRect(x, 0, width, game.ySize);
+                g.fillRect( x, 0, width, game.ySize);
             else
-                g.fillRect(x, game.ySize/4, width, game.ySize/2); 
+                g.fillRect( x, game.ySize/4, width, game.ySize/2); 
         }
 	}
     

@@ -9,6 +9,8 @@ public class ball{
     
     double speed = 5;
     double decelRate = 0.03;
+    double minMaxSpeed = 4.2;
+    double maxMaxSpeed = 9;
     double maxSpeed = 7;
     
     double x;
@@ -40,6 +42,8 @@ public class ball{
     
     public void move(){
         speed -= decelRate;
+        decelRate = ((double)0.03/7)*speed;
+        
         if(speed < 0)
             speed = 0;
         
@@ -94,7 +98,11 @@ public class ball{
     }
     
     public void addSpeed(){
-        speed++;
+        maxSpeed = maxMaxSpeed;
+    }
+    
+    public void subSpeed(){
+        maxSpeed = minMaxSpeed;
     }
     
     public void setDirection(boolean dir){

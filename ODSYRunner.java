@@ -9,6 +9,8 @@ import jssc.*;
 
 @SuppressWarnings("serial")
 public class ODSYRunner extends JPanel {
+    double scale = 1; //MOST IMPORTANT VARIABLE IN THIS WHOLE PROGRAM
+    
     
     //GAME CONFIG
     static boolean useAnalog = false;
@@ -20,7 +22,7 @@ public class ODSYRunner extends JPanel {
     boolean PlayerPlayerCollision = false; 
     int ballLineCollision = 0;
     
-    boolean inertia = false;
+    boolean inertia = true;
     
     boolean Accessory = false; 
     boolean AccessoryHitExtinguish = false; //false is ball, true is p2 
@@ -89,6 +91,12 @@ public class ODSYRunner extends JPanel {
                     if(serve){
                         pongBall.serve();
                     }
+                }
+                else if(keyA == 16){
+                    pongBall.addSpeed();
+                }
+                else if(keyA == 17){
+                    pongBall.subSpeed();
                 }
                     
 			}
@@ -173,6 +181,11 @@ public class ODSYRunner extends JPanel {
             return 14;
         if (a == KeyEvent.VK_COMMA)
             return 15;
+        
+        if (a == KeyEvent.VK_T)
+            return 16;
+        if (a == KeyEvent.VK_Y)
+            return 17;
         
         if (a == KeyEvent.VK_ESCAPE)
             System.exit(0);
@@ -278,7 +291,7 @@ public class ODSYRunner extends JPanel {
         
         //Call paint method of all actors
         g2d.setColor(Color.BLACK);
-        g2d.fillRect( 0, 0, xSize, ySize);
+        g2d.fillRect( 0, 0, (int)(scale*xSize), (int)(scale*ySize));
         
         g2d.setColor(Color.WHITE);
         box1.paint(g2d);
@@ -287,7 +300,7 @@ public class ODSYRunner extends JPanel {
         pongBall.paint(g2d);
         
         if(choiceTimer > 0)
-            g2d.drawString("" + gameChoice, 50, 50);
+            g2d.drawString("" + gameChoice, (int)(50*scale), (int)(50*scale));
             //paint choice number
         decrementTimer();
     }
@@ -321,15 +334,87 @@ public class ODSYRunner extends JPanel {
             }
         }
     }
+    
+    public double getScale(){
+        return scale;
+    }
+    
+    public void setScale(double a){
+        scale = a;
+    }
+    
+    private static String callSetup(){
+        /*JFrame frame = new JFrame("ODSY Redux Setup");
+        setup set = new setup();
+        frame.add(set);
+        frame.setSize(200, 200);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         
+        // define items in a String array:
+        String[] ratios = new String[] {"800x600p", "960x720p", "1280x960p", "1920x1080p"};
+
+        // create a combo box with the fixed array:
+        JComboBox<String> aspectRatios = new JComboBox<String>(ratios);
+        frame.add(aspectRatios);
+         
+         
+        while (true) {
+            set.repaint();
+            Thread.sleep(5);
+        }*/
+        
+        JFrame setupFrame = new JFrame("ODSY Setup");
+        setupFrame.setVisible(true);
+        setupFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setupFrame.setSize(600, 100);
+        setupFrame.setLocation(430, 100);
+
+        JPanel setupPanel = new JPanel();
+
+        setupFrame.add(setupPanel);
+
+        String[] ratios = new String[] { "Choose a resolution", "800x600p", "960x720p", "1280x960p", "1920x1080p"};
+
+        final JComboBox<String> cb = new JComboBox<String>(ratios);
+
+        cb.setVisible(true);
+        setupPanel.add(cb);
+        
+        String a = "Choose a resolution";
+        while(cb.getSelectedItem().equals(a)){
+            try{Thread.sleep(5);}
+            catch(Exception e){}
+        }
+        
+        return (String)(cb.getSelectedItem());
+    }
 
     public static void main(String[] args) throws InterruptedException {
         JFrame frame = new JFrame("ODSY Redux");
         ODSYRunner game = new ODSYRunner();
         
+        /*String res = callSetup();
+        System.out.println(res);
+        
+        
+        if(res.equals("800x600p")){
+            game.setScale(1);
+        }
+        else if(res.equals("960x720p")){
+            game.setScale((double)960/800);
+        }
+        else if(res.equals("1280x960p")){
+            game.setScale((double)1280/800);
+        }
+        else if(res.equals("1920x1080p")){
+            game.setScale((double)1920/800);
+        }*/
+        
         //get config
         
         frame.add(game);
-        frame.setSize(xSize, ySize);
+        frame.setSize( xSize, ySize);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         game.checkForController();

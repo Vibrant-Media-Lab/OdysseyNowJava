@@ -7,6 +7,7 @@ public class playerBox{
     
     //speed of player (used for games with slowed movement)
     int speed = 5; //NEEDS TWEAKED
+    double inertia = 0.01;
     
     //current location
 	int x = 20; 
@@ -58,7 +59,7 @@ public class playerBox{
         ballBounce = true;
         ballKillPlayer = false;
         
-        size = game.xSize/16;
+        size = (game.xSize/18);
         
         xMin = 0 - ((game.xSize/2)/8);
         xMax = (9/8)*game.xSize;
@@ -71,6 +72,8 @@ public class playerBox{
         if(analog){
             if(game.inertia){
                 //I don't want to do this math yet
+                x = x + (int)((inertia*(xDest-x)));
+                y = y + (int)((inertia*(yDest-y)));
             }
             else{
                 x = xDest;
@@ -78,8 +81,16 @@ public class playerBox{
             }
         }
         else{
-            x = x + speed*xa;
-            y = y + speed*ya;
+            xDest = xDest + speed*xa;
+            yDest = yDest + speed*ya;
+            if(game.inertia){
+                x = x + (int)((inertia*(xDest-x)));
+                y = y + (int)((inertia*(yDest-y)));
+            }
+            else{
+                x = xDest;
+                y = yDest;
+            }
             
             if(x < xMin){ x = xMin; }
             if(x > xMax){ x = xMax; }
@@ -95,7 +106,7 @@ public class playerBox{
 
 	public void paint(Graphics2D g) {
         if(visible && present)
-		  g.fillRect(x, y, size, size);
+		  g.fillRect( (int)(x), (int)(y), (int)(size), (int)(size));
 	}
     
     public void keyPressed(int control) {
