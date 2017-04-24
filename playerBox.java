@@ -6,7 +6,7 @@ public class playerBox{
     int player; 
     
     //speed of player (used for games with slowed movement)
-    int speed = 5; 
+    int speed = 5; //NEEDS TWEAKED
     
     //current location
 	int x = 20; 
@@ -16,6 +16,7 @@ public class playerBox{
 	int xa = 0; 
 	int ya = 0;
     
+    boolean present = true;
     boolean visible = true;
     
     //booleans storing values if 4 position buttons are currently held down
@@ -40,6 +41,9 @@ public class playerBox{
     //size of box
     int size;
     
+    boolean ballBounce;
+    boolean ballKillPlayer;
+    
 	private ODSYRunner game;
 
 	public playerBox(ODSYRunner game, int playNum, int xInit, int yInit, boolean an) {
@@ -51,17 +55,21 @@ public class playerBox{
         y = yInit/2;
         analog = an;
         
-        xMin = 0 - ((game.xSize/2)/8);
-        xMax = (9/8)*game.xSize;
-        yMin = 0 - ((game.ySize/2)/8) - size;
-        yMax = (9/8)*game.ySize;
+        ballBounce = true;
+        ballKillPlayer = false;
         
         size = game.xSize/16;
+        
+        xMin = 0 - ((game.xSize/2)/8);
+        xMax = (9/8)*game.xSize;
+        yMin = 0 - ((game.ySize/2)/8) - 2*size;
+        yMax = (9/8)*game.ySize;
+        
 	}
 
 	public void move() {
         if(analog){
-            if(game.delayedMove){
+            if(game.inertia){
                 //I don't want to do this math yet
             }
             else{
@@ -86,7 +94,7 @@ public class playerBox{
     }
 
 	public void paint(Graphics2D g) {
-        if(visible)
+        if(visible && present)
 		  g.fillRect(x, y, size, size);
 	}
     
@@ -161,13 +169,21 @@ public class playerBox{
             int boxCenterY = y + size/2;
             int ballCenterY = pong.getY() + pong.getSize()/2;
             if(Math.abs(boxCenterY - ballCenterY) <= (pong.getSize()/2 + size/2)){
-                if(player == 1){
-                    if(!pong.getDirection())
-                        pong.setDirection(true);
+                if(ballBounce){
+                    if(player == 1){
+                        if(!pong.getDirection())
+                            pong.setDirection(true);
+                    }
+                    else{
+                        if(pong.getDirection())
+                            pong.setDirection(false);
+                    }
+                }
+                else if(ballKillPlayer){
+                    visible = false;
                 }
                 else{
-                    if(pong.getDirection())
-                        pong.setDirection(false);
+                    game.pongBall.setVisibility(false);
                 }
             }
         }
@@ -197,5 +213,25 @@ public class playerBox{
     
     public void makeVisible(){
         visible = true;
+    }
+    
+    public void setPresence(boolean a){
+        present = a;
+        makeVisible();
+    }
+    
+    public void setBallCollide(int a){
+        if(a == 0){
+            ballBounce = true;
+            ballKillPlayer = false;
+        } 
+        else if (a == 1){
+            ballBounce = false;
+            ballKillPlayer = true;
+        } 
+        else{
+            ballBounce = false;
+            ballKillPlayer = false;
+        }
     }
 }

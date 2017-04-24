@@ -15,27 +15,18 @@ public class ODSYRunner extends JPanel {
     boolean mac = true; //set true if playing on macOS
     int numberOfGames = 15;
     
-    boolean PlayerSpotRight = true;
-    
-    boolean ballInit = true; 
-    boolean ballLarge = false; 
-    
     boolean linePresent = true;
-    int LinePosition = 400;
-    boolean lineMoving = false;
-    int LineHeight = 10; 
     
-    int BallPlayerCollisionType = 0;
     boolean PlayerPlayerCollision = false; 
-    boolean BallLineCollision = false;
+    int ballLineCollision = 0;
     
-    boolean delayedMove = false;
-    int PlayerSpotSpeed = 0;
-    int inertia = 0; 
+    boolean inertia = false;
     
     boolean Accessory = false; 
-    boolean AccessoryHitExtinguish = false; 
+    boolean AccessoryHitExtinguish = false; //false is ball, true is p2 
     boolean AccessoryResetAction = false; 
+    
+    boolean serve = false;
 
     
     //Window size
@@ -86,13 +77,18 @@ public class ODSYRunner extends JPanel {
                 }
                 else if(keyA == 12){
                     if(gameChoice == 1)
-                        gameChoice = 6;
+                        gameChoice = numberOfGames;
                     else
                         gameChoice--;
                     choiceTimer = 1000;
+                    loadGame(gameChoice);
                 }
                 else if(keyA == 14 || keyA == 15){
                     box2.makeVisible();
+                    pongBall.setVisibility(true);
+                    if(serve){
+                        pongBall.serve();
+                    }
                 }
                     
 			}
@@ -136,7 +132,7 @@ public class ODSYRunner extends JPanel {
     
     private void checkCollide(){
         box1.checkCollide();
-        if(PlayerSpotRight)
+        if(box2.present)
             box2.checkCollide();   
     }
     
@@ -199,7 +195,78 @@ public class ODSYRunner extends JPanel {
     
     public void loadGame(int choice){
         cardReader reader = new cardReader();
-        reader.read(choice);
+        String[] newAttributes = reader.read(choice);
+        
+        //get presence of player 2 box
+        box2.setPresence(newAttributes[0].equals("yes"));
+        
+        //presence of ball
+        pongBall.setPresence(newAttributes[1].equals("yes"));
+        
+        //size of ball
+        if(newAttributes[2].equals("large")){
+            pongBall.makeBig();
+        }
+        else{
+            pongBall.makeSmall();
+        }
+        
+        //presence of line
+        linePresent = newAttributes[3].equals("yes");
+        
+        //player2 - ball collision
+        if(newAttributes[4].equals("bounce")){
+            box2.setBallCollide(0);   
+        } 
+        else if(newAttributes[4].equals("extinguishPlayer")){
+            box2.setBallCollide(1);   
+        } 
+        else if(newAttributes[4].equals("extinguishBall")){
+            box2.setBallCollide(2);  
+        }
+        
+        //Player-Player Collision
+        PlayerPlayerCollision = newAttributes[5].equals("yes");
+        
+        //ball-line collision
+        if(newAttributes[6].equals("passthrough")){
+            ballLineCollision = 0;
+        }
+        else if(newAttributes[6].equals("bounce")){
+            ballLineCollision = 1;
+        }
+        else if (newAttributes[6].equals("extinguish")){
+            ballLineCollision = 2;
+        }
+        
+        //line position
+        if(newAttributes[7].equals("center")){
+            mid.move(mid.center);
+        }
+        else if(newAttributes[7].equals("left")){
+            mid.move(mid.left);
+        }
+        
+        //line size
+        if(newAttributes[8].equals("full")){
+            mid.setFull(true);
+        }
+        else{
+            mid.setFull(false);
+        }
+            
+        //player inertia
+        inertia = newAttributes[9].equals("yes");
+        
+        //gets if reset behavior includes serves
+        serve = newAttributes[10].equals("serve from right");
+        
+        //get if accessory attachement is used
+        Accessory = newAttributes[11].equals("yes");
+        
+        //get AccessoryHitExtinguish
+        AccessoryHitExtinguish = newAttributes[12].equals("p2");
+    
     }
     
     @Override
@@ -215,12 +282,9 @@ public class ODSYRunner extends JPanel {
         
         g2d.setColor(Color.WHITE);
         box1.paint(g2d);
-        if(PlayerSpotRight)
-            box2.paint(g2d);
-        if(linePresent)
-            mid.paint(g2d);
-        if(ballInit)
-            pongBall.paint(g2d);
+        box2.paint(g2d);
+        mid.paint(g2d);
+        pongBall.paint(g2d);
         
         if(choiceTimer > 0)
             g2d.drawString("" + gameChoice, 50, 50);

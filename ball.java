@@ -13,12 +13,15 @@ public class ball{
     
     double x;
     double y;
-    int size = 30;
+    int size;
     
     int xMin;
     int xMax;
     int yMin;
     int yMax;
+    
+    boolean present = true;
+    boolean visible = true;
     
     private ODSYRunner game;
     
@@ -31,8 +34,8 @@ public class ball{
         yMin = (int)(0 - (y/8));
         yMax = (9/8)*game.ySize;
         
-        //size = (game.box1).getSize();
-        //size = (7/8)*size;
+        size = (game.box1).getSize();
+        size = (int)(((3)*((double)size))/5);
     }
     
     public void move(){
@@ -56,8 +59,7 @@ public class ball{
         
     }
     
-    public void keyTyped(int a){
-    }
+    public void keyTyped(int a){}
     
     public void setSpeed(int newSpeed){
         speed = newSpeed;
@@ -145,7 +147,40 @@ public class ball{
         return size;
     }
     
+    public void setPresence(boolean a){
+        present = a;
+        visible = a;
+        setDirection(false);
+    }
+    
+    public void setVisibility(boolean a){
+        visible = a;
+    }
+    
+    public void makeBig(){
+        size = (game.box1).getSize();
+    }
+    
+    public void makeSmall(){
+        size = (game.box1).getSize();
+        size = (int)(((3)*((double)size))/5);
+    }
+    
+    public void bounce(){
+        if(getDirection())
+            setDirection(false);
+        else
+            setDirection(true);
+    }
+    
+    public void serve(){
+        setDirection(false);
+        x = game.xSize + 10;
+        y = game.ySize/2;
+    }
+    
     public void paint(Graphics2D g) {
+        if(visible && present)
             g.fillRect( (int)Math.floor(x), (int)Math.floor(y), size, size);
     }
 
