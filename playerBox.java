@@ -56,6 +56,9 @@ public class playerBox{
         y = yInit/2;
         analog = an;
         
+        xDest = x;
+        yDest = y;
+        
         ballBounce = true;
         ballKillPlayer = false;
         
