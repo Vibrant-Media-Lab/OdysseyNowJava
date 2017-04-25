@@ -9,7 +9,7 @@ import jssc.*;
 
 @SuppressWarnings("serial")
 public class ODSYRunner extends JPanel {
-    double scale = 1; //MOST IMPORTANT VARIABLE IN THIS WHOLE PROGRAM
+    double scale = 1; //MOST IMPORTANT VARIABLE IN THIS WHOLE PROGRAM (jk)
     
     
     //GAME CONFIG
