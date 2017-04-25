@@ -27,6 +27,10 @@ Eventually, the game will be packaged into an executable, but for we just have j
   
   Cycle through games with [ and ]
   
+  Increase Ball Speed with T
+  
+  Decrease Ball Speed with Y
+  
   
   
   Exit the game with ESCAPE

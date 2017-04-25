@@ -179,47 +179,61 @@ public class playerBox{
         return size;
     }
     
+    public boolean onScreen(){
+        if(x > game.xSize || y > game.ySize){
+            return false;
+        }
+        if(x < (0 - size) || y < (0 - size) ){
+            return false;
+        }
+        
+        return true;
+    }
+    
     public void checkCollide(){
-        ball pong = game.pongBall;
-        int boxCenterX = x + size/2; 
-        int ballCenterX = pong.getX() + pong.getSize()/2; 
-        
-        if(Math.abs(boxCenterX - ballCenterX) <= (pong.getSize()/2 + size/2)){
-            int boxCenterY = y + size/2;
-            int ballCenterY = pong.getY() + pong.getSize()/2;
-            if(Math.abs(boxCenterY - ballCenterY) <= (pong.getSize()/2 + size/2)){
-                if(ballBounce){
-                    if(player == 1){
-                        if(!pong.getDirection())
-                            pong.setDirection(true);
-                    }
-                    else{
-                        if(pong.getDirection())
-                            pong.setDirection(false);
+        if(onScreen()){
+            ball pong = game.pongBall;
+            int boxCenterX = x + size/2; 
+            int ballCenterX = pong.getX() + pong.getSize()/2; 
+
+            if(pong.onScreen()){
+                if(Math.abs(boxCenterX - ballCenterX) <= (pong.getSize()/2 + size/2)){
+                    int boxCenterY = y + size/2;
+                    int ballCenterY = pong.getY() + pong.getSize()/2;
+                    if(Math.abs(boxCenterY - ballCenterY) <= (pong.getSize()/2 + size/2)){ 
+                            if(ballBounce){
+                                if(player == 1){
+                                    if(!pong.getDirection())
+                                        pong.setDirection(true);
+                                }
+                                else{
+                                    if(pong.getDirection())
+                                        pong.setDirection(false);
+                                }
+                            }
+                            else if(ballKillPlayer){
+                                visible = false;
+                            }
+                            else{
+                                game.pongBall.setVisibility(false);
+                            }
                     }
                 }
-                else if(ballKillPlayer){
-                    visible = false;
-                }
-                else{
-                    game.pongBall.setVisibility(false);
+            }
+
+            if(player == 2 && game.PlayerPlayerCollision){
+                playerBox otherPlayer = game.box1;
+                int otherCenterX = otherPlayer.getX() + otherPlayer.getSize()/2;
+
+                if(Math.abs(boxCenterX - otherCenterX) <= (otherPlayer.getSize()/2 + size/2)){
+                    int boxCenterY = y + size/2;
+                    int otherCenterY = otherPlayer.getY() + otherPlayer.getSize()/2;
+                    if(Math.abs(boxCenterY - otherCenterY) <= (otherPlayer.getSize()/2 + size/2)){
+                        visible = false;
+                    }
                 }
             }
         }
-        
-        if(player == 2 && game.PlayerPlayerCollision){
-            playerBox otherPlayer = game.box1;
-            int otherCenterX = otherPlayer.getX() + otherPlayer.getSize()/2;
-            
-            if(Math.abs(boxCenterX - otherCenterX) <= (otherPlayer.getSize()/2 + size/2)){
-                int boxCenterY = y + size/2;
-                int otherCenterY = otherPlayer.getY() + otherPlayer.getSize()/2;
-                if(Math.abs(boxCenterY - otherCenterY) <= (otherPlayer.getSize()/2 + size/2)){
-                    visible = false;
-                }
-            }
-        }
-        
     }
     
     public void setDest(int a, int b){

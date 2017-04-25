@@ -98,11 +98,15 @@ public class ball{
     }
     
     public void addSpeed(){
-        maxSpeed = maxMaxSpeed;
+        maxSpeed++;
+        if(maxSpeed > maxMaxSpeed)
+            maxSpeed = maxMaxSpeed;
     }
     
     public void subSpeed(){
-        maxSpeed = minMaxSpeed;
+        maxSpeed--;
+        if(maxSpeed < minMaxSpeed)
+            maxSpeed = minMaxSpeed;
     }
     
     public void setDirection(boolean dir){
@@ -112,6 +116,17 @@ public class ball{
     
     public boolean getDirection(){
         return directionRight;
+    }
+    
+    public boolean onScreen(){
+        if(x > game.xSize || y > game.ySize){
+            return false;
+        }
+        if(x < (0 - size) || y < (0 - size) ){
+            return false;
+        }
+        
+        return true;
     }
     
     public void setPosition(int xIn, int yIn){
