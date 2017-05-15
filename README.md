@@ -47,7 +47,10 @@ Eventually, the game will be packaged into an executable, but for we just have j
 # Credits
   
   Lead Developer: Patrick Healy, pat.healy@pitt.edu
+  
   Assistant Developer: Christian Brill, cjb122@pitt.edu
+  
+  
   
   Under the leadership of Professor Zachary Horton
 
