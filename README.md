@@ -43,4 +43,11 @@ Eventually, the game will be packaged into an executable, but for we just have j
   3. You need to navigate to the folder in terminal/command prompt. You use the "cd" command to do this. So, for example, if your folder is called "ODSYredux" and it's currently in "Documents", type the commend "cd Documents/ODSYredux" and press return/enter. If you're ever confused, you can always use the command "ls" to show the contents of your current directory, or use the command "cd .." to go back to the parent directory of wherever you are. 
   4. Once you're in the correct folder, you'll need to compile the java files. Do this with the command "javac ODSYRunner.java". If you run into any errors, this means you probably don't have updated java drivers. Sorry if that happens; I'm not going to write a guide extensive enough to cover that, sorry! 
   5. Now that the java files are compiled, it's ready to run! Just use the command "java ODSYRunner"
+  
+# Credits
+  
+  Lead Developer: Patrick Healy, pat.healy@pitt.edu
+  Assistant Developer: Christian Brill, cjb122@pitt.edu
+  
+  Under the leadership of Professor Zachary Horton
 
