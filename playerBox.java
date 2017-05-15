@@ -180,7 +180,7 @@ public class playerBox{
     }
     
     public boolean onScreen(){
-        if(x > game.xSize || y > game.ySize){
+        if(x > 800 || y > 600){
             return false;
         }
         if(x < (0 - size) || y < (0 - size) ){
@@ -240,8 +240,8 @@ public class playerBox{
         double ratioA = ((double)a)/((double) 1024);
         double ratioB = ((double)b)/((double) 1024);
         
-        xDest = (int)(ratioA*(game.xSize));
-        yDest = (int)(ratioB*(game.ySize));
+        xDest = (int)(ratioA*(800));
+        yDest = (int)(ratioB*(600));
     }
     
     public void makeVisible(){

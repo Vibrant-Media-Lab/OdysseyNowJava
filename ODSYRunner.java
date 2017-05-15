@@ -1,3 +1,11 @@
+/*
+*   OdysseyNow - Runner Class
+*
+*   Lead Developer: Patrick Healy, pat.healy@pitt.edu
+*   Assistant Developer: Christian Brill, cjb122@pitt.edu
+*   Producer: Zachary Horton
+*/
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -9,10 +17,10 @@ import jssc.*;
 
 @SuppressWarnings("serial")
 public class ODSYRunner extends JPanel {
-    double scale = 1; //MOST IMPORTANT VARIABLE IN THIS WHOLE PROGRAM (jk)
-    
-    
+
     //GAME CONFIG
+    
+    double scale = 1;
     static boolean useAnalog = false;
     boolean mac = true; //set true if playing on macOS
     int numberOfGames = 15;
@@ -52,6 +60,9 @@ public class ODSYRunner extends JPanel {
     //controller variables
     String[] controllerValues = new String[8];
     int RV, RE, RH, xKnob, englishKnob, yKnob;
+    
+    //input thread for analog inputs
+    inputThread inThread = new inputThread(this);
     
     //constructor, full of keyboard functions
     public ODSYRunner(){
@@ -306,7 +317,11 @@ public class ODSYRunner extends JPanel {
     }
     
     public void setControllerValues(){
-        controllerValues = SerialInput.getInput();
+        
+        //multithread here
+        //controllerValues = SerialInput.getInput();
+        inThread.run();
+        
         
         RV = Integer.parseInt(controllerValues[4]);    
         RE = Integer.parseInt(controllerValues[5]);
@@ -315,6 +330,21 @@ public class ODSYRunner extends JPanel {
         xKnob = Integer.parseInt(controllerValues[1]);
         englishKnob = Integer.parseInt(controllerValues[0]);
         yKnob = Integer.parseInt(controllerValues[2]);
+    }
+    
+    private class inputThread extends Thread{
+        ODSYRunner parentGame;
+        
+        inputThread(ODSYRunner thisGame){
+             super("my extending thread");
+             start();
+           }
+           public void run(){
+             try{
+                parentGame.controllerValues = SerialInput.getInput(); 
+             }
+             catch(Exception e){}
+           }
     }
     
     public void setPlayerDest(){
@@ -342,90 +372,21 @@ public class ODSYRunner extends JPanel {
     public void setScale(double a){
         scale = a;
     }
-    
-    private static String callSetup(){
-        /*JFrame frame = new JFrame("ODSY Redux Setup");
-        setup set = new setup();
-        frame.add(set);
-        frame.setSize(200, 200);
-        frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-         
-        // define items in a String array:
-        String[] ratios = new String[] {"800x600p", "960x720p", "1280x960p", "1920x1080p"};
-
-        // create a combo box with the fixed array:
-        JComboBox<String> aspectRatios = new JComboBox<String>(ratios);
-        frame.add(aspectRatios);
-         
-         
-        while (true) {
-            set.repaint();
-            Thread.sleep(5);
-        }*/
-        
-        JFrame setupFrame = new JFrame("ODSY Setup");
-        setupFrame.setVisible(true);
-        setupFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setupFrame.setSize(600, 100);
-        setupFrame.setLocation(430, 100);
-
-        JPanel setupPanel = new JPanel();
-
-        setupFrame.add(setupPanel);
-
-        String[] ratios = new String[] { "Choose a resolution", "800x600p", "960x720p", "1280x960p", "1920x1080p"};
-
-        final JComboBox<String> cb = new JComboBox<String>(ratios);
-
-        cb.setVisible(true);
-        setupPanel.add(cb);
-        
-        String a = "Choose a resolution";
-        while(cb.getSelectedItem().equals(a)){
-            try{Thread.sleep(5);}
-            catch(Exception e){}
-        }
-        
-        return (String)(cb.getSelectedItem());
-    }
 
     public static void main(String[] args) throws InterruptedException {
         JFrame frame = new JFrame("ODSY Redux");
         ODSYRunner game = new ODSYRunner();
         
-        /*String res = callSetup();
-        System.out.println(res);
-        
-        
-        if(res.equals("800x600p")){
-            game.setScale(1);
-        }
-        else if(res.equals("960x720p")){
-            game.setScale((double)960/800);
-        }
-        else if(res.equals("1280x960p")){
-            game.setScale((double)1280/800);
-        }
-        else if(res.equals("1920x1080p")){
-            game.setScale((double)1920/800);
-        }*/
-        
-        //get config
-        
         frame.add(game);
-        frame.setSize( xSize, ySize);
+        frame.setSize( 800, 600);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         game.checkForController();
-        
-        //get game1
         
         
         while (true) {
             //call 
             
-            //INSERT FUNCTION HERE TO GET INPUT FROM CONTROLLER
             if(useAnalog){
                 game.setControllerValues();
                 game.setPlayerDest();
