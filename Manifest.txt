@@ -1,0 +1,2 @@
+Main-Class: ODSYRunner
+Class-Path: ./jssc.jar ./ODSYredux/

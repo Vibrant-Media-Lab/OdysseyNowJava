@@ -1,0 +1,13 @@
+player spot right :no
+ball :no
+ball size :
+line :no
+p2-ball collision :
+p1-p2 collision :
+ball-line collision :
+initial line position :
+line height :
+inertia :no
+right reset :
+accessory enabled : 
+accessory hit extinguished : 
