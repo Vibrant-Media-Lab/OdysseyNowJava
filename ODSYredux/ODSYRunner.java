@@ -40,11 +40,6 @@ public class ODSYRunner extends JPanel {
     boolean AccessoryResetAction = false; 
     
     boolean serve = false;
-	
-	volatile static boolean programRunning = true;
-	
-	static Thread[] threads = new Thread[8];
-
     
     //Window size
     static int xSize = 800;
@@ -66,11 +61,7 @@ public class ODSYRunner extends JPanel {
     
     //controller variables
     String[] controllerValues = new String[8];
-	volatile static boolean[] assigned = new boolean[8];  //this is a variable related to the alternate method of analog input
-    volatile int RV, RE, RH, xKnob, englishKnob, yKnob;
-    
-    //input thread for analog inputs
-    inputThread inThread = new inputThread(this);
+	volatile int RV, RE, RH, xKnob, englishKnob, yKnob;
     
     //constructor, full of keyboard functions
     public ODSYRunner(){
@@ -165,6 +156,7 @@ public class ODSYRunner extends JPanel {
     
     private int detPlayerAction(KeyEvent e){
         int a = e.getKeyCode();
+		System.out.println(a);
         if (a == KeyEvent.VK_A)
             return 0;
         if (a == KeyEvent.VK_D)
@@ -325,11 +317,8 @@ public class ODSYRunner extends JPanel {
     }
 
     public void setControllerValues(){
-        
-        //multithread here
-        //controllerValues = SerialInput.getInput();
-        inThread.run();
-        
+   
+        controllerValues = SerialInput.getInput();
         
         RV = Integer.parseInt(controllerValues[4]);    
         RE = Integer.parseInt(controllerValues[5]);
@@ -339,77 +328,37 @@ public class ODSYRunner extends JPanel {
         englishKnob = Integer.parseInt(controllerValues[0]);
         yKnob = Integer.parseInt(controllerValues[2]);
     }
-    
-    private class inputThread extends Thread{
-        ODSYRunner parentGame;
-        
-        inputThread(ODSYRunner thisGame){
-             super("my extending thread");
-             start();
-           }
-           public void run(){
-             try{
-                parentGame.controllerValues = SerialInput.getInput(); 
-             }
-             catch(Exception e){}
-           }
-    }
 	
-	//Depending on how the microcontroller is designed, we may or may not be able to use this, but I'll leave it here
-	public static class AnalogInputListener implements Runnable
+	public static class GraphicsThreading implements Runnable
 	{
-		public void run() {  
-			boolean firstTime = true;
-			int id = 0;
+		ODSYRunner game;
+		public GraphicsThreading(ODSYRunner agame) {
+			game = agame;
+		}
+		
+		public void run()
+		{
 			while(true)
 			{
-				if(firstTime) //get assignment for which input particular thread is listening for.
-				{
-					for(int zz = 0; zz < 8; zz++)
-					{
-						if(assigned[zz] == false)
-						{
-							id = zz;
-							assigned[zz] = true;
-							break;
-						}
-					}
-					firstTime = false;
-				}
-				try{
-					switch(id) {
-						case 0: //listen for a change in the English
-								Thread.sleep(1000);
-								break;
-						case 1: //listen for a change in the xKnob
-								Thread.sleep(1000);
-								break;
-						case 2: //listen for a change in the yKnob
-								Thread.sleep(1000);
-								break;
-						case 3: //listen for a change in the RH
-								Thread.sleep(1000);
-								break;
-						case 4: //listen for a change in the RV
-								Thread.sleep(1000);
-								break;
-						case 5: //listen for a change in the RE
-								Thread.sleep(1000);
-								break;
-						case 6: //???
-								Thread.sleep(1000);
-								break;
-						case 7: //???
-								Thread.sleep(1000);
-								break;
-					}
-				}
-				catch(InterruptedException e)
-				{
-					//do nothing
-				}
+				game.setControllerValues();
+				game.setPlayerDest();
 			}
-			
+		}
+	}
+	
+	public static class PaintThread implements Runnable
+		{
+		ODSYRunner game;
+		public PaintThread(ODSYRunner agame) {
+			game = agame;
+		}
+		
+		public void run()
+		{
+			while(true)
+			{
+				game.repaint();
+			}
 		}
 	}
     
@@ -423,7 +372,7 @@ public class ODSYRunner extends JPanel {
         String[] ports = SerialPortList.getPortNames();
         if(ports != null){
             for(int i = 0; i < ports.length; i++){
-                if(ports[i].equals("COM3")){
+                if(ports[i].equals("COM4")){
                     useAnalog = true;
                     return;
                 }
@@ -454,29 +403,21 @@ public class ODSYRunner extends JPanel {
         frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         game.checkForController();
-		/*if(useAnalog)  //see the AnalogInputListener class above
+		
+		if(useAnalog)
 		{
-			for(int xyy = 0; xyy < 8; xyy++){
-				(new Thread(new AnalogInputListener())).start();
-			}
-		}*/
-        
+			(new Thread(new GraphicsThreading(game))).start();
+		}
+        (new Thread(new PaintThread(game))).start();
         
         while (true) {
             
-            if(useAnalog){
-                game.setControllerValues();
-                game.setPlayerDest();
-            }
-            
-            //System.out.println("Declared serial inputs");
             //check for colisions
             game.checkCollide();
             
             //repaint everything
             game.moveBox();
             game.moveBall();
-            game.repaint();
             Thread.sleep(5);
             if(game.mac)
                 game.pressCommand();

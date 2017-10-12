@@ -3,7 +3,7 @@ import jssc.*;
 
 public class SerialInput 
 {
-	static SerialPort com3 = new SerialPort("COM3");;
+	static SerialPort com3 = new SerialPort("COM4");
 	static String p = null;
 	static String[] valueBunch = new String[8];
 	static String valueString = null;

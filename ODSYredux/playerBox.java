@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
-
-//NO MODIFICATION// --JLM
+import java.util.*;
 
 public class playerBox{
     //player number (player 1 or player 2)
@@ -14,6 +13,12 @@ public class playerBox{
     //current location
 	int x = 20; 
 	int y = 20; 
+	Queue<Integer> drawxq = new ArrayDeque<Integer>();
+	Queue<Integer> drawyq = new ArrayDeque<Integer>();
+	int drawx = 20;
+	int drawy = 20;
+	boolean dropx;
+	boolean dropy;
     
     //acceleration values
 	int xa = 0; 
@@ -37,6 +42,7 @@ public class playerBox{
     int xMax;
     int yMin;
     int yMax;
+	
     
     //if game is using analoge controls
     boolean analog;
@@ -48,6 +54,9 @@ public class playerBox{
     boolean ballKillPlayer;
     
 	private ODSYRunner game;
+	
+	//how far the paint function will draw away each time
+	int steppingValue = 5;
 
 	public playerBox(ODSYRunner game, int playNum, int xInit, int yInit, boolean an) {
 		this.game = game;
@@ -70,25 +79,30 @@ public class playerBox{
         xMax = (9/8)*game.xSize;
         yMin = 0 - ((game.ySize/2)/8) - 2*size;
         yMax = (9/8)*game.ySize;
+		
+		drawxq.add(20);
+		drawyq.add(20);
         
 	}
 
 	public void move() {
         if(analog){
-            if(game.inertia){
+            if(game.inertia && player == 2){
                 //I don't want to do this math yet
                 x = x + (int)((inertia*(xDest-x)));
                 y = y + (int)((inertia*(yDest-y)));
             }
             else{
                 x = xDest;
+				drawxq.add(x);
                 y = yDest;
+				drawyq.add(y);
             }
         }
         else{
             xDest = xDest + speed*xa;
             yDest = yDest + speed*ya;
-            if(game.inertia){
+            if(game.inertia && player == 2){
                 x = x + (int)((inertia*(xDest-x)));
                 y = y + (int)((inertia*(yDest-y)));
             }
@@ -116,7 +130,64 @@ public class playerBox{
 
 	public void paint(Graphics2D g) {
         if(visible && present)
-		  g.fillRect( (int)(x), (int)(y), (int)(size), (int)(size));
+		{
+			if(drawxq.isEmpty() && drawyq.isEmpty())	 
+				g.fillRect( (int)(x), (int)(y), (int)(size), (int)(size));
+			else if(drawxq.peek() == drawx && drawyq.peek() == drawy)
+			{
+				g.fillRect( (int) (drawxq.remove()), (int) (drawyq.remove()), (int) (size), (int) (size));
+			}
+		  	else 
+			{
+				if(drawx < drawxq.peek())
+				{
+					drawx = drawx + steppingValue;
+					if(drawx >= drawxq.peek())
+					{
+						drawx = drawxq.peek();
+						dropx = true;
+					}
+				}
+				if(drawx > drawxq.peek())
+				{
+					drawx = drawx - steppingValue;
+					if(drawx <= drawxq.peek())
+					{
+						drawx = drawxq.peek();
+						dropx = true;
+					}
+				}
+				if(drawy < drawyq.peek())
+				{
+					drawy = drawy + steppingValue;
+					if(drawy > drawyq.peek())
+					{
+						drawy = drawyq.peek();
+						dropy = true;
+					}
+				}
+				if(drawy > drawyq.peek())
+				{
+					drawy = drawy - steppingValue;
+					if(drawy < drawyq.peek())
+					{
+						drawy = drawyq.peek();
+						dropy = true;
+					}
+				}
+				g.fillRect( (int)(drawx), (int)(drawy), (int)(size), (int)(size));
+				if(dropy)
+				{
+					drawyq.remove();
+					dropy = false;
+				}
+				if(dropx)
+				{
+					drawxq.remove();
+					dropx = false;
+				}
+			}
+		}
 	}
     
     public void keyPressed(int control) {
