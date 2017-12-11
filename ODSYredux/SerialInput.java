@@ -8,6 +8,10 @@ public class SerialInput
 	static String[] valueBunch = new String[8];
 	static String valueString = null;
 	static String[] values = new String[8];
+	public SerialInput(String comName)
+	{
+		com3 = new SerialPort(comName);
+	}
 		
 	public static String[] getInput()
 	{
@@ -16,7 +20,7 @@ public class SerialInput
 		{
 			com3.openPort();
 			com3.setParams(9600, 8, 1, 0);
-		}
+		}	
 		catch (SerialPortException ex) 
 		{
 			System.out.println(ex);
@@ -27,7 +31,7 @@ public class SerialInput
 			try
 			{
 				//Input string from controller
-				p = com3.readString();  //DOES THIS BLOCK?
+				p = com3.readString(); 
 			}
 			catch (SerialPortException ex) 
 			{
@@ -43,6 +47,7 @@ public class SerialInput
 				*/
 				valueBunch = p.split("\\n");
 				valueString = valueBunch[1];
+				System.out.println(valueString);
 				values = valueString.split(",");
 				//PORT CLOSED
 				try 

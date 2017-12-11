@@ -14,6 +14,8 @@ import java.awt.Robot;
 import java.lang.*;
 import java.util.*;
 import jssc.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("serial")
 public class ODSYRunner extends JPanel {
@@ -40,6 +42,8 @@ public class ODSYRunner extends JPanel {
     boolean AccessoryResetAction = false; 
     
     boolean serve = false;
+	
+	static String controllerName;
     
     //Window size
     static int xSize = 800;
@@ -62,6 +66,8 @@ public class ODSYRunner extends JPanel {
     //controller variables
     String[] controllerValues = new String[8];
 	volatile int RV, RE, RH, xKnob, englishKnob, yKnob;
+	
+	SerialInput analogControl;
     
     //constructor, full of keyboard functions
     public ODSYRunner(){
@@ -318,7 +324,7 @@ public class ODSYRunner extends JPanel {
 
     public void setControllerValues(){
    
-        controllerValues = SerialInput.getInput();
+        controllerValues = analogControl.getInput();
         
         RV = Integer.parseInt(controllerValues[4]);    
         RE = Integer.parseInt(controllerValues[5]);
@@ -347,7 +353,7 @@ public class ODSYRunner extends JPanel {
 	}
 	
 	public static class PaintThread implements Runnable
-		{
+	{
 		ODSYRunner game;
 		public PaintThread(ODSYRunner agame) {
 			game = agame;
@@ -370,14 +376,58 @@ public class ODSYRunner extends JPanel {
     
     public void checkForController(){
         String[] ports = SerialPortList.getPortNames();
+		SerialPort com3 = new SerialPort("COM4");
+		String p = null;
+		String[] valueBunch = new String[8];
+		String port;
         if(ports != null){
             for(int i = 0; i < ports.length; i++){
-                if(ports[i].equals("COM4")){
+				//System.out.println(ports[i]);
+				port = ports[i].trim();
+				com3 = new SerialPort(port);
+				try 
+				{
+					com3.openPort();
+					com3.setParams(9600, 8, 1, 0);
+					if(!com3.isOpened()){
+						//System.out.println("Not open!");
+					}
+					while(com3.isOpened())
+					{	
+						p = com3.readString();
+						//System.out.println(p);
+						if(p != null){
+							valueBunch = p.split("\\n");
+							p = valueBunch[0];
+							String pattern = "\\d+,\\d+,\\d+,\\d+,\\d+,\\d+,\\d+,\\d+";
+							Pattern r = Pattern.compile(pattern);
+							Matcher m = r.matcher(p);
+							//System.out.println(p);
+							if (m.find( )) {
+								controllerName = port;
+								analogControl = new SerialInput(controllerName);
+								useAnalog = true;
+								com3.closePort();
+								return;
+							}
+							
+						}
+					}
+					
+					com3.closePort();
+				}	
+				catch (Exception ex) 
+				{
+					//System.out.println("Exception!");
+					ex.printStackTrace();
+				}
+                /*if(ports[i].equals("COM4")){
                     useAnalog = true;
                     return;
-                }
+                }*/
             }
         }
+		return;
     }
     
     public double getScale(){
@@ -390,18 +440,7 @@ public class ODSYRunner extends JPanel {
 
     public static void main(String[] args) throws InterruptedException {
 		
-		String osName = System.getProperty("os.name");
-		if(osName.equals("Mac OS X") || osName.equals("Darwin")){
-			mac = true;
-		}
-		
-        JFrame frame = new JFrame("ODSY Redux");
-        ODSYRunner game = new ODSYRunner();
-        
-        frame.add(game);
-        frame.setSize( 800, 600);
-        frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		ODSYRunner game = new ODSYRunner();
         game.checkForController();
 		
 		if(useAnalog)
@@ -409,6 +448,22 @@ public class ODSYRunner extends JPanel {
 			(new Thread(new GraphicsThreading(game))).start();
 		}
         (new Thread(new PaintThread(game))).start();
+		
+		String osName = System.getProperty("os.name");
+		if(osName.equals("Mac OS X") || osName.equals("Darwin")){
+			mac = true;
+		}
+		
+        JFrame frame = new JFrame("ODSY Redux");
+        
+        
+        frame.add(game);
+        frame.setSize( 800, 600);
+        frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//useAnalog = true;
+		//controllerName = "COM4";
+
         
         while (true) {
             

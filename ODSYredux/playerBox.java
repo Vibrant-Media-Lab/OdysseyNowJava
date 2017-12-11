@@ -17,6 +17,8 @@ public class playerBox{
 	Queue<Integer> drawyq = new ArrayDeque<Integer>();
 	int drawx = 20;
 	int drawy = 20;
+	int prevx;
+	int prevy;
 	boolean dropx;
 	boolean dropy;
     
@@ -43,6 +45,9 @@ public class playerBox{
     int yMin;
     int yMax;
 	
+	
+	int inertiaCount = 1;
+	int inertiaDelay = 10;  //tweak.  the higher this number, the longer it takes the block to reach its destination
     
     //if game is using analoge controls
     boolean analog;
@@ -87,17 +92,24 @@ public class playerBox{
 
 	public void move() {
         if(analog){
-            if(game.inertia && player == 2){
+            /*if(game.inertia && player == 2){
                 //I don't want to do this math yet
-                x = x + (int)((inertia*(xDest-x)));
-                y = y + (int)((inertia*(yDest-y)));
-            }
-            else{
+				
+				//drawxq.add(x + (int)((inertia*(xDest-x))));
+				//drawyq.add(y + (int)((inertia*(yDest-y))));
+              //  x = x + (int)((inertia*(xDest-x)));
+              //  y = y + (int)((inertia*(yDest-y)));
                 x = xDest;
 				drawxq.add(x);
                 y = yDest;
 				drawyq.add(y);
-            }
+            }*/
+           // else{
+                x = xDest;
+				drawxq.add(x);
+                y = yDest;
+				drawyq.add(y);
+            //}
         }
         else{
             xDest = xDest + speed*xa;
@@ -131,62 +143,84 @@ public class playerBox{
 	public void paint(Graphics2D g) {
         if(visible && present)
 		{
-			if(drawxq.isEmpty() && drawyq.isEmpty())	 
-				g.fillRect( (int)(x), (int)(y), (int)(size), (int)(size));
-			else if(drawxq.peek() == drawx && drawyq.peek() == drawy)
-			{
-				g.fillRect( (int) (drawxq.remove()), (int) (drawyq.remove()), (int) (size), (int) (size));
-			}
-		  	else 
-			{
-				if(drawx < drawxq.peek())
+			if(!game.inertia || inertiaCount % inertiaDelay == 0){
+				if(drawxq.isEmpty() && drawyq.isEmpty())	 
 				{
-					drawx = drawx + steppingValue;
-					if(drawx >= drawxq.peek())
-					{
-						drawx = drawxq.peek();
-						dropx = true;
-					}
+					g.fillRect( (int)(x), (int)(y), (int)(size), (int)(size));
+					prevx = x;
+					prevy = y;
 				}
-				if(drawx > drawxq.peek())
+				else if(drawxq.peek() == drawx && drawyq.peek() == drawy)
 				{
-					drawx = drawx - steppingValue;
-					if(drawx <= drawxq.peek())
-					{
-						drawx = drawxq.peek();
-						dropx = true;
-					}
+					prevx = drawxq.peek();
+					prevy = drawyq.peek();
+					g.fillRect( (int) (drawxq.remove()), (int) (drawyq.remove()), (int) (size), (int) (size));
 				}
-				if(drawy < drawyq.peek())
+				else 
 				{
-					drawy = drawy + steppingValue;
-					if(drawy > drawyq.peek())
+					if(drawx < drawxq.peek())
 					{
-						drawy = drawyq.peek();
-						dropy = true;
+						drawx = drawx + steppingValue;
+						if(drawx >= drawxq.peek())
+						{
+							drawx = drawxq.peek();
+							
+							dropx = true;
+							
+						}
+						prevx = drawx;
 					}
-				}
-				if(drawy > drawyq.peek())
-				{
-					drawy = drawy - steppingValue;
+					if(drawx > drawxq.peek())
+					{
+						drawx = drawx - steppingValue;
+						if(drawx <= drawxq.peek())
+						{
+							drawx = drawxq.peek();
+							dropx = true;
+						}
+						prevx = drawx;
+					}
 					if(drawy < drawyq.peek())
 					{
-						drawy = drawyq.peek();
-						dropy = true;
+						drawy = drawy + steppingValue;
+						if(drawy > drawyq.peek())
+						{
+							drawy = drawyq.peek();
+							dropy = true;
+						}
+						prevy = drawy;
 					}
-				}
-				g.fillRect( (int)(drawx), (int)(drawy), (int)(size), (int)(size));
-				if(dropy)
-				{
-					drawyq.remove();
-					dropy = false;
-				}
-				if(dropx)
-				{
-					drawxq.remove();
-					dropx = false;
+					if(drawy > drawyq.peek())
+					{
+						drawy = drawy - steppingValue;
+						if(drawy < drawyq.peek())
+						{
+							drawy = drawyq.peek();
+							dropy = true;
+						}
+						prevy = drawy;
+					}
+					g.fillRect( (int)(drawx), (int)(drawy), (int)(size), (int)(size));
+					if(dropy)
+					{
+						drawyq.remove();
+						dropy = false;
+					}
+					if(dropx)
+					{
+						drawxq.remove();
+						dropx = false;
+					}
+					
+					//System.out.println(drawx);
 				}
 			}
+			else{
+				g.fillRect( (int)(prevx), (int)(prevy), (int)(size), (int)(size));
+				//System.out.println(prevx);
+			}
+			inertiaCount ++;
+			if (inertiaCount > 10) inertiaCount= 0;
 		}
 	}
     
