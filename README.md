@@ -36,7 +36,7 @@ Eventually, the game will be packaged into an executable, but for we just have j
   Exit the game with ESCAPE
 
 # How to run a java file
-1.  Theoretically, the program should be updated so that all you need to do to run is double click BUILD and double click LAUNCH on a Windows machine.  Mac and Linux compatibility is upcoming.  If this doesn’t work, you may not have a Java Runtime environment installed.  Check the documentation for more information.    
+1.  Theoretically, the program should be updated so that all you need to do to run is double click BUILD and double click LAUNCH on a Windows machine.  Mac and Linux compatibility is upcoming.  Macs should have the capability but will not work with the build and launch files.  Instead, navigate to the directory via command line, and use the command "java -jar ODSY.jar" If this doesn’t work, you may not have a Java Runtime environment installed.  Check the documentation for more information.    
 # Credits
   
   Lead Developer: Patrick Healy, pat.healy@pitt.edu
