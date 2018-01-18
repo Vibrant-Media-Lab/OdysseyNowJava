@@ -1,4 +1,4 @@
-player spot right :no
+players visible :one
 ball :no
 ball size :
 line :no

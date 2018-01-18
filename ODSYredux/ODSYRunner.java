@@ -227,8 +227,22 @@ public class ODSYRunner extends JPanel {
         cardReader reader = new cardReader();
         String[] newAttributes = reader.read(choice);
         
-        //get presence of player 2 box
-        box2.setPresence(newAttributes[0].equals("yes"));
+        //get box presences
+		if(newAttributes[0].equals("both"))
+		{
+			box1.setPresence(true);
+			box2.setPresence(true);
+		}
+		if(newAttributes[0].equals("one"))
+		{
+			box1.setPresence(true);
+			box2.setPresence(false);
+		}
+		if(newAttributes[0].equals("two"))
+		{
+			box1.setPresence(false);
+			box2.setPresence(true);
+		}
         
         //presence of ball
         pongBall.setPresence(newAttributes[1].equals("yes"));

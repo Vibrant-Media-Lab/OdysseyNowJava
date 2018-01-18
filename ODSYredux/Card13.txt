@@ -1,4 +1,4 @@
-player spot right :yes
+players visible :both
 ball :yes
 ball size :small
 line :yes 
