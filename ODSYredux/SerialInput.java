@@ -47,7 +47,7 @@ public class SerialInput
 				*/
 				valueBunch = p.split("\\n");
 				valueString = valueBunch[1];
-				System.out.println(valueString);
+				
 				values = valueString.split(",");
 				//PORT CLOSED
 				try 
