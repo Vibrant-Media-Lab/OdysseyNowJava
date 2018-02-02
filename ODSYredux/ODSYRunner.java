@@ -421,6 +421,8 @@ public class ODSYRunner extends JPanel {
 								controllerName = port;
 								analogControl = new SerialInput(controllerName);
 								useAnalog = true;
+								box1.setAnalog(true);
+								box2.setAnalog(true);
 								com3.closePort();
 								return;
 							}

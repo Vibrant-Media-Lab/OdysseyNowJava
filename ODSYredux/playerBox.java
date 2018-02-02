@@ -8,19 +8,31 @@ public class playerBox{
     
     //speed of player (used for games with slowed movement)
     int speed = 5; //NEEDS TWEAKED
-    double inertia = 0.01;
+    double inertia = 0.01; //used for non-analog.  problematic
     
     //current location
 	int x = 20; 
 	int y = 20; 
+	
+	//variables related to the drawing of the players location
+	//rather than teleport to each new location, the program will gradually draw each location
+	
+	//the list of locations the player has visited
 	Queue<Integer> drawxq = new ArrayDeque<Integer>();
 	Queue<Integer> drawyq = new ArrayDeque<Integer>();
+	//what to currently draw
 	int drawx = 20;
 	int drawy = 20;
+	//the previous one drawn
+	//--used to determine what to draw next -- did we reach our destination?
 	int prevx;
 	int prevy;
+	//should we drop the current value in the queue?
 	boolean dropx;
 	boolean dropy;
+	//how many frames to draw between each input
+	int frameRate = 12;
+	int inertiaFrameRate = 63;
     
     //acceleration values
 	int xa = 0; 
@@ -38,6 +50,8 @@ public class playerBox{
     //current goal destination (used for games with slowed movement)
     int xDest = 20;
     int yDest = 20;
+	int prevXDest = 20;
+	int prevYDest = 20;
     
     //boundaries of play area (goes off-screen)
     int xMin;
@@ -45,9 +59,10 @@ public class playerBox{
     int yMin;
     int yMax;
 	
-	
+	//current inertia implementation slows the drawing process.
 	int inertiaCount = 1;
-	int inertiaDelay = 10;  //tweak.  the higher this number, the longer it takes the block to reach its destination
+	//will only draw every time inertiaCount reaches inertiaDelay
+	int inertiaDelay = 70;  //tweak.  the higher this number, the longer it takes the block to reach its destination
     
     //if game is using analoge controls
     boolean analog;
@@ -61,7 +76,8 @@ public class playerBox{
 	private ODSYRunner game;
 	
 	//how far the paint function will draw away each time
-	int steppingValue = 5;
+	int steppingValueX = 5;
+	int steppingValueY = 5;
 
 	public playerBox(ODSYRunner game, int playNum, int xInit, int yInit, boolean an) {
 		this.game = game;
@@ -89,6 +105,11 @@ public class playerBox{
 		drawyq.add(20);
         
 	}
+	
+	public void setAnalog(boolean a)
+	{
+		analog = a;
+	}
 
 	public void move() {
         if(analog){
@@ -105,28 +126,26 @@ public class playerBox{
 				drawyq.add(y);
             }*/
            // else{
-                x = xDest;
-				drawxq.add(x);
-                y = yDest;
-				drawyq.add(y);
+			   if(drawxq.peek() != xDest && drawyq.peek() != yDest){
+				drawxq.add(xDest);
+				drawyq.add(yDest);
+			   }
             //}
         }
         else{
             xDest = xDest + speed*xa;
             yDest = yDest + speed*ya;
-            if(game.inertia && player == 2){
+           /* if(game.inertia && player == 2){  //this inertia approach does not allow the player to ever reach the edge
                 x = x + (int)((inertia*(xDest-x)));
                 y = y + (int)((inertia*(yDest-y)));
-            }
-            else{
-                x = xDest;
-                y = yDest;
-            }
+            }*/
+            //else{
+            //}
             
-            if(x < xMin){ x = xMin; }
+           /* if(x < xMin){ x = xMin; }
             if(x > xMax){ x = xMax; }
             if(y < yMin){ y = yMin; }
-            if(y > yMax){ y = yMax; }
+            if(y > yMax){ y = yMax; }*/
             
             if(xDest < xMin){ xDest = xMin; }
             if(xDest > xMax){ xDest = xMax; }
@@ -137,90 +156,89 @@ public class playerBox{
     
     public void setLoc(int a, int b){
         x = a;
+		drawxq.clear();
         y = b;
+		drawyq.clear();
     }
+	
+	private int getFrameRate(double dist)
+	{
+		if( dist > 800 )
+			return 30;
+		if( dist > 700 )
+			return 25;
+		if( dist > 600 )
+			return 21;
+		if( dist > 500 )
+			return 17;
+		if( dist > 400 )
+			return 15;
+		if( dist > 300 )
+			return 13;
+		if( dist > 200 )
+			return 10;
+		if( dist > 100 )
+			return 7;
+		if( dist > 70 )
+			return 5; 
+		if( dist > 50 )
+			return 4;
+		if( dist > 30 )
+			return 3;
+		if( dist > 20 )
+			return 2; 
+		return 1;
+	}
 
 	public void paint(Graphics2D g) {
         if(visible && present)
 		{
-			if(!game.inertia || inertiaCount % inertiaDelay == 0){
-				if(drawxq.isEmpty() && drawyq.isEmpty())	 
+			
+			if(!game.inertia || player == 1 || inertiaCount % inertiaDelay == 0){
+				if(xDest - prevXDest > 3 || xDest - prevXDest < -3 || yDest - prevYDest > 3 || yDest - prevYDest < -3)
 				{
-					g.fillRect( (int)(x), (int)(y), (int)(size), (int)(size));
-					prevx = x;
-					prevy = y;
-				}
-				else if(drawxq.peek() == drawx && drawyq.peek() == drawy)
-				{
-					prevx = drawxq.peek();
-					prevy = drawyq.peek();
-					g.fillRect( (int) (drawxq.remove()), (int) (drawyq.remove()), (int) (size), (int) (size));
-				}
-				else 
-				{
-					if(drawx < drawxq.peek())
-					{
-						drawx = drawx + steppingValue;
-						if(drawx >= drawxq.peek())
-						{
-							drawx = drawxq.peek();
-							
-							dropx = true;
-							
-						}
-						prevx = drawx;
-					}
-					if(drawx > drawxq.peek())
-					{
-						drawx = drawx - steppingValue;
-						if(drawx <= drawxq.peek())
-						{
-							drawx = drawxq.peek();
-							dropx = true;
-						}
-						prevx = drawx;
-					}
-					if(drawy < drawyq.peek())
-					{
-						drawy = drawy + steppingValue;
-						if(drawy > drawyq.peek())
-						{
-							drawy = drawyq.peek();
-							dropy = true;
-						}
-						prevy = drawy;
-					}
-					if(drawy > drawyq.peek())
-					{
-						drawy = drawy - steppingValue;
-						if(drawy < drawyq.peek())
-						{
-							drawy = drawyq.peek();
-							dropy = true;
-						}
-						prevy = drawy;
-					}
-					g.fillRect( (int)(drawx), (int)(drawy), (int)(size), (int)(size));
-					if(dropy)
-					{
-						drawyq.remove();
-						dropy = false;
-					}
-					if(dropx)
-					{
-						drawxq.remove();
-						dropx = false;
-					}
+					System.out.println(drawx);
+					System.out.println(xDest);
+					//pythagoras' theorem
+					//double xlength = Math.abs( (double) xDest - (double) x );
+					//double ylength = Math.abs( (double) yDest - (double)y );
+					double xlength =  (double) xDest - (double) x ;
+					double ylength =  (double) yDest - (double) y ;
+					System.out.println(xlength);
+					double dist = Math.sqrt( xlength*xlength + ylength*ylength ) ;
 					
-					//System.out.println(drawx);
+					//System.out.println(dist);
+					double distEachStep = dist/getFrameRate(dist);
+					steppingValueX = (int) (xlength*distEachStep/dist); //dist/distEachStep = xlength/svx
+					steppingValueY = (int) (ylength*distEachStep/dist);
+					
+					System.out.println(steppingValueX);
+					
+					System.out.println();
 				}
+				
+				drawy = drawy + steppingValueY;
+				drawx = drawx + steppingValueX;
+				if(steppingValueY > 0 && drawy > yDest ) drawy = yDest;
+				if(steppingValueX > 0 && drawx > xDest) drawx = xDest;
+				if(steppingValueY < 0 && drawy < yDest ) drawy = yDest;
+				if(steppingValueX <	0 && drawx < xDest) drawx = xDest;
+				
+				
+				g.fillRect( (int)(drawx), (int)(drawy), (int)(size), (int)(size));
+				x = drawx;
+				y = drawy;
+				
+				prevXDest = xDest;
+				prevYDest = yDest;
 			}
-			else{
-				g.fillRect( (int)(prevx), (int)(prevy), (int)(size), (int)(size));
-				//System.out.println(prevx);
+			else
+			{
+				g.fillRect( (int)(drawx), (int)(drawy), (int)(size), (int)(size));
+
 			}
-			inertiaCount ++;
-			if (inertiaCount > 10) inertiaCount= 0;
+			inertiaCount++;
+			if(inertiaCount > inertiaDelay) inertiaCount = 0;
 		}
 	}
     
