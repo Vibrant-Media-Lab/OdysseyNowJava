@@ -15,11 +15,7 @@ public class playerBox{
 	int y = 20; 
 	
 	//variables related to the drawing of the players location
-	//rather than teleport to each new location, the program will gradually draw each location
 	
-	//the list of locations the player has visited
-	Queue<Integer> drawxq = new ArrayDeque<Integer>();
-	Queue<Integer> drawyq = new ArrayDeque<Integer>();
 	//what to currently draw
 	int drawx = 20;
 	int drawy = 20;
@@ -76,8 +72,8 @@ public class playerBox{
 	private ODSYRunner game;
 	
 	//how far the paint function will draw away each time
-	int steppingValueX = 5;
-	int steppingValueY = 5;
+	double steppingValueX = 800;
+	double steppingValueY = 800;
 
 	public playerBox(ODSYRunner game, int playNum, int xInit, int yInit, boolean an) {
 		this.game = game;
@@ -95,14 +91,13 @@ public class playerBox{
         ballKillPlayer = false;
         
         size = (game.xSize/18);
+		System.out.println(size);
         
         xMin = 0 - ((game.xSize/2)/8);
         xMax = (9/8)*game.xSize;
         yMin = 0 - ((game.ySize/2)/8) - 2*size;
         yMax = (9/8)*game.ySize;
 		
-		drawxq.add(20);
-		drawyq.add(20);
         
 	}
 	
@@ -113,6 +108,9 @@ public class playerBox{
 
 	public void move() {
         if(analog){
+			//currently, the move function does nothing for analog controls.  This is intentional.  It's all handled in the paint function.
+			
+			
             /*if(game.inertia && player == 2){
                 //I don't want to do this math yet
 				
@@ -126,13 +124,11 @@ public class playerBox{
 				drawyq.add(y);
             }*/
            // else{
-			   if(drawxq.peek() != xDest && drawyq.peek() != yDest){
-				drawxq.add(xDest);
-				drawyq.add(yDest);
-			   }
+	
             //}
         }
         else{
+			//For non-analog, move() handles keypresses and acceleration
             xDest = xDest + speed*xa;
             yDest = yDest + speed*ya;
            /* if(game.inertia && player == 2){  //this inertia approach does not allow the player to ever reach the edge
@@ -155,14 +151,18 @@ public class playerBox{
 	}
     
     public void setLoc(int a, int b){
-        x = a;
-		drawxq.clear();
-        y = b;
-		drawyq.clear();
+		xDest = a;
+		drawx = a;
+		yDest = b;
+		drawy = b;
+        //x = a;
+        //y = b;
     }
 	
 	private int getFrameRate(double dist)
 	{
+		//the further away we are from our target, the more frames we'll draw between
+		//drawing too many frames to a close target results in choppy movement
 		if( dist > 800 )
 			return 30;
 		if( dist > 700 )
@@ -189,59 +189,79 @@ public class playerBox{
 			return 2; 
 		return 1;
 	}
+	
+	//inertia delay is dynamically set.  this function could be the key to inertia?
+	public int getInertiaDelay( double v)
+	{
+		//move faster the further away we are...
+		//should we have this style, or should there be an equation?
+		if (v > 1200) return 1;
+		if (v < 2) return 1;
+		
+		return (int) Math.ceil(-x*-x/24000 + 60);
+	}
 
 	public void paint(Graphics2D g) {
-        if(visible && present)
-		{
-			
-			if(!game.inertia || player == 1 || inertiaCount % inertiaDelay == 0){
-				if(xDest - prevXDest > 3 || xDest - prevXDest < -3 || yDest - prevYDest > 3 || yDest - prevYDest < -3)
-				{
-					System.out.println(drawx);
-					System.out.println(xDest);
+       // if(visible && present)
+	//	{
+			//inertia delay is dynamically set.  the player only moves once every inertiaDelay frames
+			if(!game.inertia || player == 1 || !visible || inertiaCount % inertiaDelay == 0){
+				//please see documentation v.0.3.3 for a more thorough explanation.
+				//only move if there's a signifigant change
+				//if(xDest - prevXDest > 3 || xDest - prevXDest < -3 || yDest - prevYDest > 3 || yDest - prevYDest < -3)
+				//{
 					//pythagoras' theorem
-					//double xlength = Math.abs( (double) xDest - (double) x );
-					//double ylength = Math.abs( (double) yDest - (double)y );
 					double xlength =  (double) xDest - (double) x ;
 					double ylength =  (double) yDest - (double) y ;
-					System.out.println(xlength);
+					
 					double dist = Math.sqrt( xlength*xlength + ylength*ylength ) ;
 					
-					//System.out.println(dist);
-					double distEachStep = dist/getFrameRate(dist);
-					steppingValueX = (int) (xlength*distEachStep/dist); //dist/distEachStep = xlength/svx
+					//calculate intermediate frames via similar triangles
+					int steps = getFrameRate(dist);
+					if(game.inertia) steps*=4;
+					double distEachStep = dist/steps;
+					steppingValueX = (int) (xlength*distEachStep/dist); 
 					steppingValueY = (int) (ylength*distEachStep/dist);
-					
-					System.out.println(steppingValueX);
-					
-					System.out.println();
+
+				//}
+				if(game.inertia && player == 2) 
+				{ 
+					//rudimentary inertia.  key is to slow down the rate of drawing (i.e., the squares location) by a certain curve
+					double xlen =  (double) xDest - (double) drawx ;
+					double ylen =  (double) yDest - (double) drawy ;
+					double indist = Math.sqrt( xlen*xlen + ylen*ylen ) ;
+					inertiaDelay = getInertiaDelay( indist );
 				}
-				
-				drawy = drawy + steppingValueY;
-				drawx = drawx + steppingValueX;
+				//add the increment
+				drawy = (int) ((double) drawy + steppingValueY);
+				drawx = (int) ((double) drawx + steppingValueX);
+				//don't allow them to overstep their target
 				if(steppingValueY > 0 && drawy > yDest ) drawy = yDest;
 				if(steppingValueX > 0 && drawx > xDest) drawx = xDest;
 				if(steppingValueY < 0 && drawy < yDest ) drawy = yDest;
 				if(steppingValueX <	0 && drawx < xDest) drawx = xDest;
 				
-				
-				g.fillRect( (int)(drawx), (int)(drawy), (int)(size), (int)(size));
+				//draw
+				if(visible && present) {g.fillRect( (int)(drawx), (int)(drawy), (int)(size), (int)(size));}
+				//set the location
 				x = drawx;
 				y = drawy;
 				
+				//keep track of prev. destination
 				prevXDest = xDest;
 				prevYDest = yDest;
 			}
 			else
 			{
-				g.fillRect( (int)(drawx), (int)(drawy), (int)(size), (int)(size));
-
+				//if we're not on a frame to move for inertia, just redraw where we previously were
+				if(visible && present) {g.fillRect( (int)(drawx), (int)(drawy), (int)(size), (int)(size));}
 			}
 			inertiaCount++;
-			if(inertiaCount > inertiaDelay) inertiaCount = 0;
+			//inertia delay is dynamically set
+			if(inertiaCount > inertiaDelay) inertiaCount = 1;
 		}
-	}
-    
+	//}
+    //these two functions are for keyboard controls
     public void keyPressed(int control) {
         if(control == 0){
             xa = -1;
@@ -365,8 +385,13 @@ public class playerBox{
         double ratioA = ((double)a)/((double) 1024);
         double ratioB = ((double)b)/((double) 1024);
         
-        xDest = (int)(ratioA*(800));
-        yDest = (int)(ratioB*(600));
+		
+		//this is what's allowing our players to go offscreen for analog controls
+		//these functions allow for approximately 1.5 times the character size on each edge
+		
+		//Note:  this will need to be changed when scaling is involved.  
+        xDest = (int)((ratioA*(800)) *1.186 - size*1.5);
+        yDest = (int)((ratioB*(600))*1.22 - size*1.5);
     }
     
     public void makeVisible(){
