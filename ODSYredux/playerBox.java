@@ -141,7 +141,7 @@ public class playerBox{
       
       //calculate intermediate frames via similar triangles
       int steps = getFrameRate(dist);
-      if(game.inertia && player == 2) steps*=4;
+      // if(game.inertia && player == 2) steps*=4;
       double distEachStep = dist/steps;
       steppingValueX = (int) (xlength*distEachStep/dist); 
       steppingValueY = (int) (ylength*distEachStep/dist);
