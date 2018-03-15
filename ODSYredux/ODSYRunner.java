@@ -68,6 +68,8 @@ public class ODSYRunner extends JPanel {
 	volatile int RV, RE, RH, xKnob, englishKnob, yKnob;
 	
 	SerialInput analogControl;
+  
+  Random rand = new Random();
     
     //constructor, full of keyboard functions
     public ODSYRunner(){
@@ -145,7 +147,7 @@ public class ODSYRunner extends JPanel {
     
     //calls movement methods of all player actors
 	private void moveBox() {
-		box1.move();
+        box1.move();
         box2.move();
 	}
     
@@ -323,8 +325,9 @@ public class ODSYRunner extends JPanel {
         //Call paint method of all actors
         g2d.setColor(Color.BLACK);
         g2d.fillRect( 0, 0, (int)(scale*xSize), (int)(scale*ySize));
-        
-        g2d.setColor(Color.WHITE);
+        float alpha = (float)(rand.nextInt(10) + 91) / 100; 
+
+        g2d.setColor(new Color(1.0f,1.0f,1.0f,alpha));
         box1.paint(g2d);
         box2.paint(g2d);
         mid.paint(g2d);

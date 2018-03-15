@@ -213,12 +213,14 @@ public class playerBox{
 	//inertia delay is dynamically set.  this function could be the key to inertia?
 	public int getInertiaDelay( double v)
 	{
+    System.out.println(v);
 		//move faster the further away we are...
 		if (v > 1100) return 1;
 		if (v < 2) return 1;
 		
 		//return (int) Math.ceil(-(x*x)/70000 + 15);
-    return (int) (15*Math.cos(x/700));
+    //return (int) (15*Math.cos(x/700));
+    return (int) (35.0/1100.0 * Math.sqrt( 1100*1100 - x*x ));
 	}
 
 	public void paint(Graphics2D g) {
