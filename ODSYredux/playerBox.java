@@ -134,6 +134,11 @@ public class playerBox{
       //please see documentation v.0.3.3 for a more thorough explanation.
 
       //pythagoras' theorem
+      if(!game.inertia)
+      {
+        drawx = xDest;
+        drawy = yDest;
+      }
       double xlength =  (double) xDest - (double) x ;
       double ylength =  (double) yDest - (double) y ;
       
@@ -141,7 +146,7 @@ public class playerBox{
       
       //calculate intermediate frames via similar triangles
       int steps = getFrameRate(dist);
-      // if(game.inertia && player == 2) steps*=4;
+      if(game.inertia && player == 2) steps*=4;
       double distEachStep = dist/steps;
       steppingValueX = (int) (xlength*distEachStep/dist); 
       steppingValueY = (int) (ylength*distEachStep/dist);
@@ -162,7 +167,7 @@ public class playerBox{
       if(steppingValueY > 0 && drawy > yDest ) drawy = yDest;
       if(steppingValueX > 0 && drawx > xDest) drawx = xDest;
       if(steppingValueY < 0 && drawy < yDest ) drawy = yDest;
-      if(steppingValueX <	0 && drawx < xDest) drawx = xDest;
+      if(steppingValueX <	0 && drawx < xDest) drawx = xDest; 
     }
       
 		inertiaCount++;
@@ -213,7 +218,6 @@ public class playerBox{
 	//inertia delay is dynamically set.  this function could be the key to inertia?
 	public int getInertiaDelay( double v)
 	{
-    System.out.println(v);
 		//move faster the further away we are...
 		if (v > 1100) return 1;
 		if (v < 2) return 1;
@@ -230,6 +234,7 @@ public class playerBox{
       x = drawx;
       y = drawy;
       
+      //the "ghost" effect
       if(player == 2 && game.PlayerPlayerCollision && !visible)
       {
         int boxCenterX = x + size/2; 
